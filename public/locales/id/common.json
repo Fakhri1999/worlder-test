@@ -1,0 +1,18 @@
+{
+  "header": {
+    "title": "Header title",
+    "description": "Header description"
+  },
+  "page": {
+    "title": "This is the title of the INDEX page",
+    "description": "This is the description of the INDEX page"
+  },
+  "other_page": {
+    "title": "This is the title of the OTHER page",
+    "description": "This is the description of OTHER page"
+  },
+  "footer": {
+    "title": "Footer title",
+    "description": "Footer description"
+  }
+}

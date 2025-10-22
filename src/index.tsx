@@ -7,7 +7,7 @@ import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 
 import './i18n';
-import 'nprogress/nprogress.css';
+import './index.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

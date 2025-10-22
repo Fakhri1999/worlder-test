@@ -1,4 +1,3 @@
-import { Flex } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
@@ -9,20 +8,22 @@ import { Header } from '@/ui/common/Header';
 
 type Props = {
   children: ReactNode;
+  showHeader?: boolean;
+  showFooter?: boolean;
 };
 
-function PageProvider({ children }: Props) {
+function PageProvider({ children, showHeader = true, showFooter = true }: Props) {
   const { onLoad } = usePage();
 
   const render = useMemo(() => {
     return (
-      <Flex flexDir='column' minH='100vh' bgColor='#FCFCFC'>
-        <Header />
+      <div className='flex flex-col min-h-screen bg-[#FCFCFC]'>
+        {showHeader && <Header />}
         {children}
-        <Footer />
-      </Flex>
+        {showFooter && <Footer />}
+      </div>
     );
-  }, [children]);
+  }, [children, showHeader, showFooter]);
 
   useEffect(() => {
     onLoad(render);

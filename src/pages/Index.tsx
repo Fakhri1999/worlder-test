@@ -1,4 +1,3 @@
-import { Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -10,20 +9,17 @@ function Index() {
 
   return (
     <PageProvider>
-      <Flex
-        flexDir='column'
-        flex={1}
-        w='100%'
-        textAlign='center'
-        justifyContent='center'>
-        <Heading>{t('common:page.title')}</Heading>
-        <Text>{t('common:page.description')}</Text>
+      <div className='flex flex-col flex-1 w-full text-center justify-center'>
+        <h1 className='text-4xl font-bold'>{t('common:page.title')}</h1>
+        <p className='mt-2'>{t('common:page.description')}</p>
         <Link to={routesUrl.other}>
-          <Button colorScheme='blue' mt={4}>
+          <button
+            type='button'
+            className='cursor-pointer mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'>
             Go to &quot;Other Page&quot;
-          </Button>
+          </button>
         </Link>
-      </Flex>
+      </div>
     </PageProvider>
   );
 }

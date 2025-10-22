@@ -1,23 +1,12 @@
-import { Flex, Heading, Text } from '@chakra-ui/react';
-
 import { PageProvider } from '@/providers/PageProvider';
 
 function PageNotFound() {
   return (
     <PageProvider>
-      <Flex
-        flexDir='column'
-        flex={1}
-        justifyContent='center'
-        alignItems='center'>
-        <Heading
-          as='h1'
-          fontSize={{ base: '32px', md: '42px' }}
-          color='brandPrimary.900'>
-          404
-        </Heading>
-        <Text fontSize={{ base: '16px', md: '20px' }}>Not Found</Text>
-      </Flex>
+      <div className='flex flex-col flex-1 justify-center items-center'>
+        <h1 className='text-4xl md:text-5xl font-bold text-gray-900'>404</h1>
+        <p className='text-base md:text-xl mt-2'>Not Found</p>
+      </div>
     </PageProvider>
   );
 }

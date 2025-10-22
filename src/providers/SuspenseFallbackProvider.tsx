@@ -1,4 +1,4 @@
-import { createContext, Suspense, useCallback, useMemo, useState } from 'react';
+import { createContext, Suspense, useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 
 export type FallbackType = NonNullable<ReactNode> | null;
@@ -23,14 +23,9 @@ function SuspenseFallbackProvider({ children }: Props) {
     setFallback(() => newFallback);
   }, []);
 
-  const renderChildren = useMemo(() => {
-    return children;
-  }, [children]);
-
   return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
     <SuspenseFallbackContext.Provider value={{ updateFallback }}>
-      <Suspense fallback={fallback}>{renderChildren}</Suspense>
+      <Suspense fallback={fallback}>{children}</Suspense>
     </SuspenseFallbackContext.Provider>
   );
 }

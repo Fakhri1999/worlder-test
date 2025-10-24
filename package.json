@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.15",
-    "@tanstack/react-query": "^4.20.9",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -20,18 +19,20 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@xstate/react": "^6.0.0",
+    "clsx": "^2.1.1",
     "i18next": "^22.4.8",
     "i18next-http-backend": "^2.1.1",
     "nprogress": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.1.1",
-    "react-lines-ellipsis": "^0.15.3",
-    "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.6.1",
     "tailwindcss": "^4.1.15",
+    "ts-adt": "^2.1.2",
     "typescript": "^5.9.3",
-    "web-vitals": "^2.1.0"
+    "xstate": "^5.23.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",

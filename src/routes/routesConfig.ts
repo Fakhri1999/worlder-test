@@ -1,6 +1,6 @@
 const routesUrl = {
   index: '/',
-  other: '/other',
+  movies: '/movies',
 };
 
 export { routesUrl };

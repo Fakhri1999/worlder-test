@@ -69,6 +69,7 @@ const movieMachine = setup({
     }),
   },
 }).createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QFsD2A3AlmAsgQwGMALTAOzADoBJCAGzAGIAxAUQBUBhACQH0cB5AGpUWAZQDaABgC6iUAAdUsTABdMqUnJAAPRAGYArACYKADiOmAjJYMA2SQHYjDgCyWANCACeiKxQOSgYFWBjYOAJzhAL5RnmhYuIQk5BRMYCrEZFAABDgY2LAMEBqUZOioANaUAGbpxHkJsFKySCCKymoaWroIei4meobhLi4OehHhfXqePghGRgYULgZ61saWEZajejFx+YmZKWkZyTkNBQxgAE5XqFcU8rR4KtV3yBS1J+dwzVrtqupNK0en0BkMRmMJlMZohLHoTEFAttLJJbEYXDFYiBSKgIHAtPFsPhDmA-koAV1gYgALS2GEIWkURHM5kOXYgQkHZKUGj0MkdQHdRAGNxLBy2OxGWwuWxbOneRDDCiWBZIozWWzixzsznE7mpOqnXL7eCtf6dIGgHr9ekqhwUcLikVohySFHizFRIA */
   id: 'movieMachine',
   initial: 'Fetching Movies',
   context: initContext,

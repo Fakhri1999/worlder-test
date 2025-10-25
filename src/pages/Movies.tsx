@@ -7,7 +7,7 @@ import type { Movie } from '@/modules/movie/movieEntity';
 import { useMovieMachine } from '@/modules/movie/movieMachineHooks';
 import { PageProvider } from '@/providers/PageProvider';
 import { routesUrl } from '@/routes/routesConfig';
-import { MovieCard } from '@/ui/components/MovieCard';
+import { MovieCard } from '@/ui/movie/MovieCard';
 
 type MovieCategory = 'popular' | 'now_playing' | 'top_rated';
 
@@ -15,7 +15,7 @@ function Index() {
   const [category, setCategory] = useState<MovieCategory>('popular');
 
   const [state, send] = useMovieMachine();
-
+  console.log('error', state.context.error);
   const handleCategoryChange = (newCategory: MovieCategory) => {
     // TODO: implement fetch other categories
     setCategory(newCategory);
@@ -28,7 +28,7 @@ function Index() {
   };
 
   return (
-    <PageProvider showHeader={false} showFooter={false}>
+    <PageProvider>
       <div className='flex flex-col flex-1 w-full min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden'>
         {/* Animated Background Elements */}
         <div

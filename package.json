@@ -21,6 +21,7 @@
     "@types/react-dom": "^18.0.0",
     "@xstate/react": "^6.0.0",
     "clsx": "^2.1.1",
+    "firebase": "^12.4.0",
     "i18next": "^22.4.8",
     "i18next-http-backend": "^2.1.1",
     "nprogress": "^0.2.0",

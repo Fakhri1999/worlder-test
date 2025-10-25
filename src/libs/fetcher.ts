@@ -3,9 +3,23 @@ import type { z } from 'zod';
 import { ZodError } from 'zod';
 
 export type APIError = ADT<{
-  DECODE_ERROR: { message: string };
-  UNKNOWN_ERROR: { message: string };
-  FETCH_ERROR: { message: string; status?: number };
+  DECODE_ERROR: {
+    message: string;
+    error?: ZodError;
+  };
+  UNKNOWN_ERROR: {
+    message: string;
+    error?: Error;
+  };
+  FETCH_ERROR: {
+    message: string;
+    error?: TypeError | Response | unknown;
+    status?: number;
+  };
+  AUTH_ERROR: {
+    message: string;
+    error?: unknown;
+  };
 }>;
 
 export interface FetchConfig extends RequestInit {
@@ -54,6 +68,7 @@ export const fetcher: Fetcher = (config, schema) => {
           reject({
             _type: 'DECODE_ERROR',
             message: JSON.stringify(err.message),
+            error: err,
           });
           return;
         }
@@ -61,6 +76,7 @@ export const fetcher: Fetcher = (config, schema) => {
           reject({
             _type: 'FETCH_ERROR',
             message: err.message,
+            error: err,
           });
           return;
         }
@@ -68,7 +84,11 @@ export const fetcher: Fetcher = (config, schema) => {
           reject(err);
           return;
         }
-        reject({ _type: 'UNKNOWN_ERROR', message: 'Unknown error' });
+        reject({
+          _type: 'UNKNOWN_ERROR',
+          message: 'Unknown error',
+          error: err,
+        });
       });
   });
 };

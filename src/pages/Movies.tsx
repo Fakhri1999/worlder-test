@@ -1,9 +1,11 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { matchPI } from 'ts-adt';
 
+import { useAuthUser } from '@/modules/auth/authHooks';
 import type { Movie } from '@/modules/movie/movieEntity';
+import { useFavoritesMachine } from '@/modules/movie/movieFavoritesMachineHooks';
 import { useMovieMachine } from '@/modules/movie/movieMachineHooks';
 import { PageProvider } from '@/providers/PageProvider';
 import { routesUrl } from '@/routes/routesConfig';
@@ -14,17 +16,56 @@ type MovieCategory = 'popular' | 'now_playing' | 'top_rated';
 function Index() {
   const [category, setCategory] = useState<MovieCategory>('popular');
 
-  const [state, send] = useMovieMachine();
-  console.log('error', state.context.error);
+  const [movieState, movieSend] = useMovieMachine();
+  const [favoritesState, favoritesSend] = useFavoritesMachine();
+  const { user, isAuthReady } = useAuthUser();
+
+  // Load favorites on mount
+  useEffect(() => {
+    if (!isAuthReady) {
+      // Wait for auth to initialize
+      return;
+    }
+
+    if (!user?.uid) {
+      // Auth is ready but no user logged in - mark as initialized
+      favoritesSend({ type: 'SKIP_FAVORITES' });
+      return;
+    }
+
+    favoritesSend({ type: 'LOAD_FAVORITES' });
+  }, [favoritesSend, user?.uid, isAuthReady]);
+
   const handleCategoryChange = (newCategory: MovieCategory) => {
     // TODO: implement fetch other categories
     setCategory(newCategory);
-    send({
+    movieSend({
       type: 'FETCH_MOVIES',
       data: {
         page: 1,
       },
     });
+  };
+
+  const handleToggleFavorite = (movie: Movie) => {
+    if (!user?.uid) {
+      alert('Please login first to favorite movies');
+      return;
+    }
+
+    const isFavorite = favoritesState.context.favoriteIds.has(movie.id);
+
+    if (isFavorite) {
+      favoritesSend({
+        type: 'REMOVE_FAVORITE',
+        data: { movieId: movie.id },
+      });
+    } else {
+      favoritesSend({
+        type: 'ADD_FAVORITE',
+        data: { movie },
+      });
+    }
   };
 
   return (
@@ -117,7 +158,7 @@ function Index() {
               </button>
             </div>
 
-            {state.matches('Fetching Movies') && (
+            {movieState.matches('Fetching Movies') && (
               <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
                 {Array.from({ length: 20 }).map((_, index) => (
                   <div
@@ -147,7 +188,7 @@ function Index() {
             )}
 
             {/* Error State */}
-            {state.context?.error && (
+            {movieState.context?.error && (
               <div className='bg-linear-to-r from-red-500/20 to-pink-500/20 backdrop-blur-sm border border-red-400/30 rounded-2xl p-8 text-center shadow-xl'>
                 <div className='w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4'>
                   <svg
@@ -167,7 +208,7 @@ function Index() {
                   Oops! Something went wrong
                 </p>
                 <p className='text-gray-300'>
-                  {matchPI(state.context.error)(
+                  {matchPI(movieState.context.error)(
                     {
                       FETCH_ERROR: (err) =>
                         `Error ${err.status}: ${err.message}`,
@@ -182,17 +223,29 @@ function Index() {
             )}
 
             {/* Movies Grid */}
-            {state.matches('Idle') && state.context.movies && (
+            {movieState.matches('Idle') && movieState.context.movies && (
               <>
                 <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
-                  {state.context.movies.map((movie: Movie, index: number) => (
-                    <div
-                      key={movie.id}
-                      className='animate-fadeInUp'
-                      style={{ animationDelay: `${index * 10}ms` }}>
-                      <MovieCard movie={movie} />
-                    </div>
-                  ))}
+                  {movieState.context.movies.map(
+                    (movie: Movie, index: number) => (
+                      <div
+                        key={movie.id}
+                        className='animate-fadeInUp'
+                        style={{ animationDelay: `${index * 10}ms` }}>
+                        <MovieCard
+                          movie={movie}
+                          isFavorite={favoritesState.context.favoriteIds.has(
+                            movie.id,
+                          )}
+                          isLoadingFavorites={
+                            !favoritesState.context.isInitialized ||
+                            favoritesState.matches('Loading Favorites')
+                          }
+                          onToggleFavorite={handleToggleFavorite}
+                        />
+                      </div>
+                    ),
+                  )}
                 </div>
 
                 {/* Pagination */}
@@ -200,17 +253,18 @@ function Index() {
                   <button
                     type='button'
                     onClick={() =>
-                      send({
+                      movieSend({
                         type: 'FETCH_MOVIES',
                         data: {
-                          page: Math.max(1, state.context.currentPage - 1),
+                          page: Math.max(1, movieState.context.currentPage - 1),
                         },
                       })
                     }
-                    disabled={state.context.currentPage === 1}
+                    disabled={movieState.context.currentPage === 1}
                     className={clsx(
                       'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
-                      state.context.currentPage === 1 && 'cursor-not-allowed',
+                      movieState.context.currentPage === 1 &&
+                        'cursor-not-allowed',
                     )}>
                     <svg
                       className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
@@ -228,26 +282,29 @@ function Index() {
                   </button>
                   <div className='px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
                     <span className='text-sm opacity-75'>Page</span>{' '}
-                    <span className='text-xl'>{state.context.currentPage}</span>{' '}
+                    <span className='text-xl'>
+                      {movieState.context.currentPage}
+                    </span>{' '}
                     <span className='text-sm opacity-75'>
-                      of {state.context.totalPage}
+                      of {movieState.context.totalPage}
                     </span>
                   </div>
                   <button
                     type='button'
                     onClick={() =>
-                      send({
+                      movieSend({
                         type: 'FETCH_MOVIES',
-                        data: { page: state.context.currentPage + 1 },
+                        data: { page: movieState.context.currentPage + 1 },
                       })
                     }
                     disabled={
-                      state.context.currentPage >= state.context.totalPage
+                      movieState.context.currentPage >=
+                      movieState.context.totalPage
                     }
                     className={clsx(
                       'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
-                      state.context.currentPage >= state.context.totalPage &&
-                        'cursor-not-allowed',
+                      movieState.context.currentPage >=
+                        movieState.context.totalPage && 'cursor-not-allowed',
                     )}>
                     Next
                     <svg

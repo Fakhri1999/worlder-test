@@ -2,13 +2,14 @@ import { assign, fromPromise, setup } from 'xstate';
 
 import { APIError } from '@/libs/fetcher';
 
-import { GetMoviesResponse, Movie } from './movieEntity';
+import { FavoriteMovie, GetMoviesResponse, Movie } from './movieEntity';
 
 type MovieContext = {
   currentPage: number;
   totalPage: number;
   movies: Movie[];
   error: APIError | null;
+  mode: 'tmdb' | 'favorites';
 };
 
 type MovieEvent =
@@ -17,11 +18,22 @@ type MovieEvent =
       data: { page: number };
     }
   | {
+      type: 'FETCH_FAVORITES';
+    }
+  | {
       type: 'xstate.done.actor.fetchMovies';
       output: GetMoviesResponse;
     }
   | {
       type: 'xstate.error.actor.fetchMovies';
+      error?: APIError;
+    }
+  | {
+      type: 'xstate.done.actor.fetchFavorites';
+      output: FavoriteMovie[];
+    }
+  | {
+      type: 'xstate.error.actor.fetchFavorites';
       error?: APIError;
     };
 
@@ -30,6 +42,7 @@ const initContext: MovieContext = {
   totalPage: 0,
   movies: [],
   error: null,
+  mode: 'tmdb',
 };
 
 const movieMachine = setup({
@@ -42,6 +55,10 @@ const movieMachine = setup({
     fetchMovies: fromPromise<GetMoviesResponse, { page: number }>(() => {
       // Implement in hooks
       return Promise.resolve({} as GetMoviesResponse);
+    }),
+    fetchFavorites: fromPromise<FavoriteMovie[]>(() => {
+      // Implement in hooks
+      return Promise.resolve([]);
     }),
   },
   actions: {
@@ -57,11 +74,31 @@ const movieMachine = setup({
         movies: response.results,
         totalPage: response.total_pages,
         currentPage: response.page,
+        mode: 'tmdb' as const,
+        error: null,
+      };
+    }),
+    updateFavoritesData: assign(({ event }) => {
+      const favorites =
+        event.type === 'xstate.done.actor.fetchFavorites' ? event.output : [];
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const movies: Movie[] = favorites.map(({ addedAt, ...movie }) => movie);
+
+      return {
+        movies,
+        totalPage: 1,
+        currentPage: 1,
+        mode: 'favorites' as const,
+        error: null,
       };
     }),
     setError: assign({
       error: ({ event }) => {
-        if (event.type === 'xstate.error.actor.fetchMovies') {
+        if (
+          event.type === 'xstate.error.actor.fetchMovies' ||
+          event.type === 'xstate.error.actor.fetchFavorites'
+        ) {
           return event.error || null;
         }
         return null;
@@ -69,7 +106,6 @@ const movieMachine = setup({
     }),
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QFsD2A3AlmAsgQwGMALTAOzADoBJCAGzAGIAxAUQBUBhACQH0cB5AGpUWAZQDaABgC6iUAAdUsTABdMqUnJAAPRAGYArACYKADiOmAjJYMA2SQHYjDgCyWANCACeiKxQOSgYFWBjYOAJzhAL5RnmhYuIQk5BRMYCrEZFAABDgY2LAMEBqUZOioANaUAGbpxHkJsFKySCCKymoaWroIei4meobhLi4OehHhfXqePghGRgYULgZ61saWEZajejFx+YmZKWkZyTkNBQxgAE5XqFcU8rR4KtV3yBS1J+dwzVrtqupNK0en0BkMRmMJlMZohLHoTEFAttLJJbEYXDFYiBSKgIHAtPFsPhDmA-koAV1gYgALS2GEIWkURHM5kOXYgQkHZKUGj0MkdQHdRAGNxLBy2OxGWwuWxbOneRDDCiWBZIozWWzixzsznE7mpOqnXL7eCtf6dIGgHr9ekqhwUcLikVohySFHizFRIA */
   id: 'movieMachine',
   initial: 'Fetching Movies',
   context: initContext,
@@ -77,9 +113,11 @@ const movieMachine = setup({
     Idle: {
       on: {
         FETCH_MOVIES: 'Fetching Movies',
+        FETCH_FAVORITES: 'Fetching Favorites',
       },
     },
     'Fetching Movies': {
+      tags: 'loading',
       invoke: {
         id: 'fetchMovies',
         src: 'fetchMovies',
@@ -92,6 +130,21 @@ const movieMachine = setup({
         onDone: {
           target: 'Idle',
           actions: 'updateMoviesData',
+        },
+        onError: {
+          target: 'Idle',
+          actions: 'setError',
+        },
+      },
+    },
+    'Fetching Favorites': {
+      tags: 'loading',
+      invoke: {
+        id: 'fetchFavorites',
+        src: 'fetchFavorites',
+        onDone: {
+          target: 'Idle',
+          actions: 'updateFavoritesData',
         },
         onError: {
           target: 'Idle',

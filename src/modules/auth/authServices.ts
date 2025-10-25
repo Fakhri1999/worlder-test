@@ -5,8 +5,8 @@ import {
   updateProfile,
 } from 'firebase/auth';
 
-import { firebaseAuth } from '@/config/firebase';
 import { APIError } from '@/libs/fetcher';
+import { firebaseAuth } from '@/libs/firebase';
 
 import type {
   LoginRequest,
@@ -38,6 +38,7 @@ export async function loginUser(request: LoginRequest): Promise<LoginResponse> {
       },
     };
   } catch (error: unknown) {
+    console.error('[loginUser] error:', error);
     const firebaseError = error as { code?: string; message?: string };
     let errorMessage = 'Authentication failed. Please try again.';
 
@@ -46,7 +47,8 @@ export async function loginUser(request: LoginRequest): Promise<LoginResponse> {
       case 'auth/invalid-credential':
       case 'auth/wrong-password':
       case 'auth/user-not-found':
-        errorMessage = 'Invalid email or password. Please check your credentials.';
+        errorMessage =
+          'Invalid email or password. Please check your credentials.';
         break;
 
       case 'auth/invalid-email':
@@ -54,7 +56,8 @@ export async function loginUser(request: LoginRequest): Promise<LoginResponse> {
         break;
 
       case 'auth/user-disabled':
-        errorMessage = 'This account has been disabled. Please contact support.';
+        errorMessage =
+          'This account has been disabled. Please contact support.';
         break;
 
       case 'auth/too-many-requests':
@@ -127,6 +130,7 @@ export async function registerUser(
       },
     };
   } catch (error: unknown) {
+    console.error('[registerUser] error:', error);
     const firebaseError = error as { code?: string; message?: string };
     let errorMessage = 'Registration failed. Please try again.';
 
@@ -143,7 +147,8 @@ export async function registerUser(
         break;
 
       case 'auth/invalid-email':
-        errorMessage = 'Invalid email address format. Please enter a valid email.';
+        errorMessage =
+          'Invalid email address format. Please enter a valid email.';
         break;
 
       case 'auth/operation-not-allowed':
@@ -168,8 +173,7 @@ export async function registerUser(
 
       case 'auth/configuration-not-found':
       case 'auth/internal-error':
-        errorMessage =
-          'Registration service error. Please try again later.';
+        errorMessage = 'Registration service error. Please try again later.';
         break;
 
       case 'auth/admin-restricted-operation':
@@ -204,6 +208,7 @@ export async function logoutUser(): Promise<void> {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_data');
   } catch (error: unknown) {
+    console.error('[logoutUser] error:', error);
     const firebaseError = error as { message?: string };
     throw new Error(
       firebaseError.message || 'Logout failed. Please try again.',

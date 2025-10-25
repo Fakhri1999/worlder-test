@@ -1,5 +1,5 @@
-import { useForm } from '@/modules/auth/hooks/useForm';
 import { APIError } from '@/libs/fetcher';
+import { useForm } from '@/modules/form/useForm';
 
 type RegisterFormData = {
   name: string;

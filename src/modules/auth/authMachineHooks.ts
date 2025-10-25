@@ -1,19 +1,23 @@
 import { useMachine } from '@xstate/react';
+import { signOut } from 'firebase/auth';
 import { assign, fromPromise } from 'xstate';
 
+import { firebaseAuth } from '@/libs/firebase';
+
 import { LoginResponse } from './authEntity';
+import { useAuthUser } from './authHooks';
 import { authMachine } from './authMachine';
 import { loginUser, registerUser } from './authServices';
 
 export function useAuthMachine() {
+  const { user } = useAuthUser();
+
   return useMachine(
     authMachine.provide({
       guards: {
         isAuthenticated: () => {
-          const token = localStorage.getItem('auth_token');
-          const userData = localStorage.getItem('user_data');
-
-          return !!(token && userData);
+          // Check if user is authenticated via Firebase Auth
+          return !!firebaseAuth.currentUser;
         },
       },
       actors: {
@@ -37,8 +41,10 @@ export function useAuthMachine() {
       },
       actions: {
         clearAuth: assign(() => {
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('user_data');
+          // Sign out from Firebase Auth (no localStorage cleanup needed)
+          signOut(firebaseAuth).catch((error) => {
+            console.error('Firebase signout error:', error);
+          });
 
           return {
             name: '',
@@ -59,21 +65,26 @@ export function useAuthMachine() {
             return {};
           }
 
-          localStorage.setItem('auth_token', response.user.token);
-          localStorage.setItem('user_data', JSON.stringify(response.user));
-
+          // No localStorage - Firebase Auth handles persistence
           return {
             user: response.user,
             error: null,
           };
         }),
         setInitUser: assign(() => {
-          const token = localStorage.getItem('auth_token');
-          const userData = localStorage.getItem('user_data');
+          // Use Firebase Auth's current user instead of localStorage
 
-          if (token && userData) {
+          if (user) {
+            // Map Firebase user to your User type
+            const newUser = {
+              id: user.uid,
+              email: user.email || '',
+              name: user.displayName || '',
+              token: '', // Token not needed when using Firebase Auth directly
+            };
+
             return {
-              user: JSON.parse(userData),
+              user: newUser,
             };
           }
 

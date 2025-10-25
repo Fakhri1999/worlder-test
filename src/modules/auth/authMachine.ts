@@ -14,6 +14,9 @@ type AuthContext = {
 
 type AuthEvent =
   | {
+      type: 'CHECK_AUTHENTICATION';
+    }
+  | {
       type: 'LOGIN';
       data: { email: string; password: string };
     }
@@ -137,9 +140,14 @@ const authMachine = setup({
 }).createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QEMCuAXAFgWWQY0wEsA7MAOgGVMB7AdxKgAIAZaqExgMWoCcBbAMTMA8gHEAkgDkA2gAYAuolAAHarELpC1YkpAAPRAGYA7IbIBWAIzmAbJYAcxm8YBMAFkPOANCACeRhzJnAE5nYzd7c0M3YMsAXzifNCxcAhJyKjoGFjYObn4BCgAJYQB1AH0AJQBRCQoAFWrK8s5hSuw5RSQQVXVNbV0DBBMzK1sHJ1cPbz9EK0sLSNj7F1X7e2sbBKSMHHwiUkoaemImSrB2WHQwHi5eQRq6xsrO3V6NLR1uobcYsntgrI7G5zMYAcFwoYfP4EMZZAsYi5Nm4XOs3JYtokQMk9mlDpkTmcLoQrjc7gVimVyiIJJIWm0Ogo3moPgNvkZgsFFuZgqDzLZTPYobMEOjzGRLIYXMYIZF0dZDNtsbtUgdyKwoOxToxxMQBBBtOQSAA3agAa3IABtcsQAKqwG6vbrvfpfUBDdbilYbDE2WQ82QQ6FGIFkJyGeFAyyxOFRJU41XpMgarVMXUCG48XhkZSW5DoABm9zI1q19sdTOdLNdg0Qv2MZGCLlCQuchmC6xswYQq3Fqxs-NCEWsUUVWIT+yT50u1x4DH1hrIJvN5B4xNJPHLPCdKmrn1rw1MFk2E2c7k8xm7MobwRB0pCTlkYPjKsnh2nJNn88z2dz+aL-BkGuM43FuO49HubLukYR5jHYjhntMl4in69hkLI7YYUsGJuM+46vni5AAIK7GAxCaHg+aQEIYjCLa9TgS6+7sggMYWDYLhWO4IKGPYvzdhsZAxJynJuDYJiuNKCRYsQ1AQHAugToRzJ9Mx0EIAAtF2IoaeKIn6QZnJjjsKRvhkxzZBqeT3CprJuvoiCSg2EQeGChignYsjSt2Vhcq4sR2JyjicpiJm4mqRxZNqH4buSfC2TWLEcW4FhPhsMrNg4qLdslQQDgGNjrOELgvqZhHJmwqY6vZTFQQ5CC5eYaWWBlyzZSKEZ9u2thWOijjNqFyplRFMVfqcCVqfVKJXkeMqFU4NhuLI6wuINSkRSRWBkRRVEQBNdVDJY-pmMVDgDg4USuN2hiGAsLjdeJkS3RsQrSXEQA */
   id: 'authMachine',
-  initial: 'Check Authentication',
+  initial: 'Waiting for Authentication Check',
   context: initContext,
   states: {
+    'Waiting for Authentication Check': {
+      on: {
+        CHECK_AUTHENTICATION: 'Check Authentication',
+      },
+    },
     'Check Authentication': {
       always: [
         {

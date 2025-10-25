@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useAuthUser } from '@/modules/auth/authHooks';
 import { useAuthMachine } from '@/modules/auth/authMachineHooks';
 import { PageProvider } from '@/providers/PageProvider';
 import { routesUrl } from '@/routes/routesConfig';
@@ -7,7 +9,14 @@ import { LoginFormContainer } from '@/ui/auth/LoginFormContainer';
 import { RegisterFormContainer } from '@/ui/auth/RegisterFormContainer';
 
 function Index() {
+  const { isAuthReady } = useAuthUser();
   const [state, send] = useAuthMachine();
+
+  useEffect(() => {
+    if (isAuthReady) {
+      send({ type: 'CHECK_AUTHENTICATION' });
+    }
+  }, [isAuthReady]);
 
   const error = state.context.error;
   const user = state.context.user;

@@ -1,5 +1,5 @@
 import { APIError } from '@/libs/fetcher';
-import { useForm } from '@/modules/auth/hooks/useForm';
+import { useForm } from '@/modules/form/useForm';
 
 type LoginFormData = {
   email: string;

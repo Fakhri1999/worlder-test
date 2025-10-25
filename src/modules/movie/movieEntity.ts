@@ -102,7 +102,13 @@ export const MovieDetailSchema = z.object({
   vote_count: z.number(),
 });
 
+// Favorite Movie Schema (extends Movie with addedAt timestamp)
+export const FavoriteMovieSchema = MovieSchema.extend({
+  addedAt: z.number(),
+});
+
 // Inferred Types from Schemas
 export type Movie = z.infer<typeof MovieSchema>;
 export type GetMoviesResponse = z.infer<typeof GetMoviesResponseSchema>;
 export type MovieDetail = z.infer<typeof MovieDetailSchema>;
+export type FavoriteMovie = z.infer<typeof FavoriteMovieSchema>;

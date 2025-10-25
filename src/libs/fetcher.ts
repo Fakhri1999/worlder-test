@@ -9,7 +9,7 @@ export type APIError = ADT<{
   };
   UNKNOWN_ERROR: {
     message: string;
-    error?: Error;
+    error?: unknown;
   };
   FETCH_ERROR: {
     message: string;

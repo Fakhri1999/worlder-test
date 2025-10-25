@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { TMDB_BASE_IMAGE_URL } from '@/config/tmdb';
 import type { Movie } from '@/modules/movie/movieEntity';
+import { routesUrl } from '@/routes/routesConfig';
 
 interface MovieCardProps {
   movie: Movie;
@@ -20,10 +22,11 @@ function MovieCard({ movie }: MovieCardProps) {
   const ratingPercentage = (movie.vote_average / 10) * 100;
 
   return (
-    <div
-      className='group relative h-full flex flex-col rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-linear-to-br from-gray-900 to-black'
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}>
+    <Link to={routesUrl.movieDetail(movie.id)}>
+      <div
+        className='group relative h-full flex flex-col rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-linear-to-br from-gray-900 to-black'
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}>
       {/* Main Image */}
       <div className='relative aspect-2/3 bg-linear-to-br from-gray-900 to-black overflow-hidden'>
         <img
@@ -129,15 +132,28 @@ function MovieCard({ movie }: MovieCardProps) {
               {movie.overview}
             </p>
 
-            {/* Play Button */}
-            <button
-              type='button'
-              className='w-full py-2.5 bg-white/90 hover:bg-white text-black font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105'>
-              <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20'>
-                <path d='M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z' />
+            {/* View Details Button */}
+            <div className='w-full py-2.5 bg-white/90 hover:bg-white text-black font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105'>
+              <svg
+                className='w-5 h-5'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'>
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M15 12a3 3 0 11-6 0 3 3 0 016 0z'
+                />
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                />
               </svg>
-              Watch Trailer
-            </button>
+              View Details
+            </div>
           </div>
         </div>
 
@@ -156,7 +172,8 @@ function MovieCard({ movie }: MovieCardProps) {
           </p>
         )}
       </div>
-    </div>
+      </div>
+    </Link>
   );
 }
 

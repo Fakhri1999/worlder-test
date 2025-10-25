@@ -1,8 +1,12 @@
 import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from '@/config/tmdb';
 import { fetcher } from '@/libs/fetcher';
 
-import type { GetMoviesRequest, GetMoviesResponse } from './movieEntity';
-import { GetMoviesResponseSchema } from './movieEntity';
+import type {
+  GetMoviesRequest,
+  GetMoviesResponse,
+  MovieDetail,
+} from './movieEntity';
+import { GetMoviesResponseSchema, MovieDetailSchema } from './movieEntity';
 
 export async function getMovies(
   request?: GetMoviesRequest,
@@ -30,5 +34,18 @@ export async function getMovies(
       },
     },
     GetMoviesResponseSchema,
+  );
+}
+
+export async function getMovieDetail(movieId: number): Promise<MovieDetail> {
+  return fetcher(
+    {
+      url: `${TMDB_BASE_URL}/movie/${movieId}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+      },
+    },
+    MovieDetailSchema,
   );
 }

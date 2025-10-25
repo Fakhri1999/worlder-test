@@ -11,12 +11,16 @@ const Index = lazy(() =>
 const MoviesPage = lazy(() =>
   import('@/pages/Movies').then((mod) => ({ default: mod.Index })),
 );
+const MovieDetailPage = lazy(() =>
+  import('@/pages/MovieDetail').then((mod) => ({ default: mod.MovieDetail })),
+);
 
 function Router() {
   return (
     <Routes>
       <Route path={routesUrl.index} element={<Index />} />
       <Route path={routesUrl.movies} element={<MoviesPage />} />
+      <Route path='/movies/:id' element={<MovieDetailPage />} />
       <Route path='*' element={<PageNotFound />} />
     </Routes>
   );

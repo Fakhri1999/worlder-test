@@ -38,11 +38,11 @@
 
 TODO:
 
-- [ ] Set up ReactJS with TypeScript project
-- [ ] Fetch and display popular, now playing, upcoming, and top-rated movies from TMDB API
-- [ ] Create movie detail page
+- [x] Set up ReactJS with TypeScript project
+- [x] Fetch and display popular, now playing, upcoming, and top-rated movies from TMDB API
+- [x] Create movie detail page
 - [ ] Implement movie search functionality
-- [ ] Implement firebase login and registration
+- [x] Implement firebase login and registration
 - [ ] Implement favourite movies list functionality and save to firebase
 - [ ] Write documentation in Markup language
 - [ ] Host the application on a free hosting platform

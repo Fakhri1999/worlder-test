@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdLanguage } from 'react-icons/md';
+import { MdLanguage as LanguageIcon } from 'react-icons/md';
 
 const LANGUAGES = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -25,7 +25,7 @@ function LanguageSwitcherContainer() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className='cursor-pointer group px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl'>
-        <MdLanguage className='w-5 h-5' />
+        <LanguageIcon className='w-5 h-5' />
         <span className='font-semibold'>{currentLanguage.flag}</span>
         <span className='hidden sm:inline'>{currentLanguage.name}</span>
         <svg

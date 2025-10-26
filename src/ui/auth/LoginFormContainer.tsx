@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { FcGoogle } from 'react-icons/fc';
+import { FcGoogle as GoogleIcon } from 'react-icons/fc';
 
 import { APIError } from '@/libs/fetcher';
 import { useForm } from '@/modules/form/useForm';
@@ -107,7 +107,7 @@ function LoginFormContainer({
           onClick={onGoogleSignIn}
           disabled={isLoading}
           className='w-full bg-white hover:bg-gray-50 text-gray-800 font-semibold py-3.5 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3'>
-          <FcGoogle className='text-2xl' />
+          <GoogleIcon className='text-2xl' />
           <span>{t('auth.signInWithGoogle')}</span>
         </button>
 

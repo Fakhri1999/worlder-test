@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FaPlay as PlayIcon } from 'react-icons/fa';
 import { matchPI } from 'ts-adt';
 
 import type { APIError } from '@/libs/fetcher';
 import type { MovieDetail } from '@/modules/movie/movieEntity';
+import { TrailerModal } from '@/ui/movie/TrailerModal';
 
 interface MovieDetailProps {
   movieDetail: MovieDetail | null;
@@ -18,6 +21,31 @@ function MovieDetail({
   headerActions,
 }: MovieDetailProps) {
   const { t } = useTranslation();
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
+
+  // Find the official trailer from videos
+  const getTrailerKey = (): string | null => {
+    if (!movieDetail?.videos?.results) return null;
+
+    // Prefer official trailers
+    const officialTrailer = movieDetail.videos.results.find(
+      (video) =>
+        video.type === 'Trailer' &&
+        video.site === 'YouTube' &&
+        video.official === true,
+    );
+
+    if (officialTrailer) return officialTrailer.key;
+
+    // Fallback to any trailer
+    const anyTrailer = movieDetail.videos.results.find(
+      (video) => video.type === 'Trailer' && video.site === 'YouTube',
+    );
+
+    return anyTrailer?.key || null;
+  };
+
+  const trailerKey = getTrailerKey();
 
   return (
     <div className='flex flex-col flex-1 w-full min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden'>
@@ -304,18 +332,37 @@ function MovieDetail({
                   </div>
                 )}
 
-                {movieDetail.homepage && (
-                  <a
-                    href={movieDetail.homepage}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='inline-block px-4 py-2.5 sm:px-6 sm:py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-sm sm:text-base hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300'>
-                    {t('movieDetail.visitWebsite')}
-                  </a>
-                )}
+                <div className='flex flex-wrap gap-3 sm:gap-4'>
+                  {trailerKey && (
+                    <button
+                      onClick={() => setIsTrailerOpen(true)}
+                      className='cursor-pointer px-4 py-2.5 sm:px-6 sm:py-3 bg-linear-to-r from-red-500 to-pink-600 text-white rounded-xl font-semibold text-sm sm:text-base hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 flex items-center gap-2'>
+                      <PlayIcon />
+                      {t('movieDetail.watchTrailer')}
+                    </button>
+                  )}
+                  {movieDetail.homepage && (
+                    <a
+                      href={movieDetail.homepage}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='inline-block px-4 py-2.5 sm:px-6 sm:py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-sm sm:text-base hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300'>
+                      {t('movieDetail.visitWebsite')}
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>
+        )}
+
+        {trailerKey && (
+          <TrailerModal
+            videoKey={trailerKey}
+            isOpen={isTrailerOpen}
+            onClose={() => setIsTrailerOpen(false)}
+            title={movieDetail?.title}
+          />
         )}
       </div>
     </div>

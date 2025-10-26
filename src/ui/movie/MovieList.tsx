@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { IoClose } from 'react-icons/io5';
-import { MdSearch } from 'react-icons/md';
+import { IoClose as CloseIcon } from 'react-icons/io5';
+import { MdSearch as SearchIcon } from 'react-icons/md';
 import { matchPI } from 'ts-adt';
 
 import type { APIError } from '@/libs/fetcher';
@@ -96,13 +96,15 @@ function MovieList({
                 {t('movies.subtitle')}
               </p>
             </div>
-            <div className='flex items-center gap-3 sm:gap-4'>{headerActions}</div>
+            <div className='flex items-center gap-3 sm:gap-4'>
+              {headerActions}
+            </div>
           </div>
 
           <div className='mb-5 sm:mb-6 animate-slideInUp'>
             <div className='relative max-w-2xl mx-auto'>
               <div className='absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none'>
-                <MdSearch className='w-5 h-5 sm:w-6 sm:h-6 text-gray-400 z-10' />
+                <SearchIcon className='w-5 h-5 sm:w-6 sm:h-6 text-gray-400 z-10' />
               </div>
               <input
                 type='text'
@@ -120,7 +122,7 @@ function MovieList({
                 <button
                   onClick={onClearSearch}
                   className='absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center cursor-pointer hover:text-white text-gray-400 transition-colors'>
-                  <IoClose className='w-5 h-5 sm:w-6 sm:h-6' />
+                  <CloseIcon className='w-5 h-5 sm:w-6 sm:h-6' />
                 </button>
               )}
             </div>
@@ -227,7 +229,7 @@ function MovieList({
           {!isLoading && searchQuery && movies.length === 0 && (
             <div className='bg-linear-to-r from-gray-800/20 to-gray-900/20 backdrop-blur-sm border border-gray-700/30 rounded-2xl p-12 text-center shadow-xl'>
               <div className='w-20 h-20 bg-gray-700/20 rounded-full flex items-center justify-center mx-auto mb-6'>
-                <MdSearch className='w-10 h-10 text-gray-400' />
+                <SearchIcon className='w-10 h-10 text-gray-400' />
               </div>
               <p className='text-white font-bold text-2xl mb-3'>
                 {t('movies.noMoviesFound')}

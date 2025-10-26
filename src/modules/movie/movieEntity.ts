@@ -66,6 +66,19 @@ export const SpokenLanguageSchema = z.object({
   name: z.string(),
 });
 
+export const MovieVideoSchema = z.object({
+  id: z.string(),
+  iso_3166_1: z.string(),
+  iso_639_1: z.string(),
+  key: z.string(),
+  name: z.string(),
+  official: z.boolean(),
+  published_at: z.coerce.date(),
+  site: z.string().default('YouTube'),
+  size: z.number(),
+  type: z.string(),
+});
+
 export const MovieDetailSchema = z.object({
   adult: z.boolean(),
   backdrop_path: z.string().nullable(),
@@ -100,6 +113,11 @@ export const MovieDetailSchema = z.object({
   video: z.boolean(),
   vote_average: z.number(),
   vote_count: z.number(),
+  videos: z
+    .object({
+      results: z.array(MovieVideoSchema),
+    })
+    .nullable(),
 });
 
 // Favorite Movie Schema (extends Movie with addedAt timestamp)

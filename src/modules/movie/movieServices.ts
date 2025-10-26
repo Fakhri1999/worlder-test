@@ -89,7 +89,7 @@ export async function searchMovies(
 export async function getMovieDetail(movieId: number): Promise<MovieDetail> {
   return fetcher(
     {
-      url: `${TMDB_BASE_URL}/movie/${movieId}`,
+      url: `${TMDB_BASE_URL}/movie/${movieId}?append_to_response=videos`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,

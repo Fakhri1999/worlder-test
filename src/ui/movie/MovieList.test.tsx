@@ -1,8 +1,10 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@/test/test-utils';
-import { MovieList } from './MovieList';
-import { mockMovies } from '@/test/mocks/movie.mock';
 import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
+
+import { mockMovies } from '@/test/mocks/movie.mock';
+import { render, screen } from '@/test/test-utils';
+
+import { MovieList } from './MovieList';
 
 describe('MovieList', () => {
   const mockOnCategoryChange = vi.fn();
@@ -181,7 +183,7 @@ describe('MovieList', () => {
 
   it('displays error message when error is present', () => {
     const error = {
-      _tag: 'FETCH_ERROR' as const,
+      _type: 'FETCH_ERROR' as const,
       status: 404,
       message: 'Not found',
     };

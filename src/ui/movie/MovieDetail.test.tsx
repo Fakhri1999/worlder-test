@@ -1,7 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@/test/test-utils';
-import { MovieDetail } from './MovieDetail';
+import { describe, expect, it } from 'vitest';
+
 import { mockMovieDetail } from '@/test/mocks/movie.mock';
+import { render, screen } from '@/test/test-utils';
+
+import { MovieDetail } from './MovieDetail';
 
 describe('MovieDetail', () => {
   const defaultProps = {
@@ -105,9 +107,7 @@ describe('MovieDetail', () => {
     render(<MovieDetail {...defaultProps} />);
 
     // The component displays the heading in uppercase
-    expect(
-      screen.getByText('PRODUCTION COMPANIES'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('PRODUCTION COMPANIES')).toBeInTheDocument();
     expect(screen.getByText('Test Studios')).toBeInTheDocument();
   });
 
@@ -121,7 +121,9 @@ describe('MovieDetail', () => {
   });
 
   it('displays loading skeleton when isLoading is true', () => {
-    render(<MovieDetail {...defaultProps} isLoading={true} movieDetail={null} />);
+    render(
+      <MovieDetail {...defaultProps} isLoading={true} movieDetail={null} />,
+    );
 
     // Should show skeleton loaders
     const skeletons = document.querySelectorAll('.animate-pulse');
@@ -130,14 +132,12 @@ describe('MovieDetail', () => {
 
   it('shows error message when error is present', () => {
     const error = {
-      _tag: 'FETCH_ERROR' as const,
+      _type: 'FETCH_ERROR' as const,
       status: 404,
       message: 'Not found',
     };
 
-    render(
-      <MovieDetail {...defaultProps} error={error} movieDetail={null} />,
-    );
+    render(<MovieDetail {...defaultProps} error={error} movieDetail={null} />);
 
     expect(screen.getByText(/oops/i)).toBeInTheDocument();
   });

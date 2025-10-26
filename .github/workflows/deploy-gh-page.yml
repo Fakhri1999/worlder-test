@@ -31,7 +31,7 @@ jobs:
         run: yarn install
 
       - name: Build react app
-        run: cd app && yarn build
+        run: yarn build
         env:
           VITE_TMDB_ACCESS_TOKEN: ${{ vars.VITE_TMDB_ACCESS_TOKEN }}
           VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}

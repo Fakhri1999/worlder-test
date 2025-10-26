@@ -30,6 +30,10 @@ function Index() {
     });
   };
 
+  const handleGoogleSignIn = () => {
+    send({ type: 'LOGIN_WITH_GOOGLE' });
+  };
+
   const handleRegisterSubmit = (data: {
     name: string;
     email: string;
@@ -84,9 +88,8 @@ function Index() {
             <div className='w-full max-w-2xl animate-fadeIn'>
               <LoginFormContainer
                 onSubmit={handleLoginSubmit}
-                isLoading={state.matches({
-                  'Showing Login Form': 'Logging In',
-                })}
+                onGoogleSignIn={handleGoogleSignIn}
+                isLoading={state.hasTag('loading')}
                 error={error}
                 onClickRegister={handleShowRegisterForm}
               />
@@ -150,7 +153,9 @@ function Index() {
                           d='M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z'
                         />
                       </svg>
-                      <span className='truncate'>{t('home.exploreMovies')}</span>
+                      <span className='truncate'>
+                        {t('home.exploreMovies')}
+                      </span>
                       <svg
                         className='w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform flex-shrink-0'
                         fill='none'

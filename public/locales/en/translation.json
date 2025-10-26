@@ -79,7 +79,9 @@
     "firebaseDemo": "Firebase Authentication Demo",
     "registerLink": "Register",
     "signInLink": "Sign in",
-    "logout": "Logout"
+    "logout": "Logout",
+    "orContinueWith": "or continue with",
+    "signInWithGoogle": "Sign in with Google"
   },
   "errors": {
     "fetchError": "Error {{status}}: {{message}}",

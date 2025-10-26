@@ -1,6 +1,8 @@
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile,
 } from 'firebase/auth';
@@ -179,6 +181,86 @@ export async function registerUser(
       case 'auth/admin-restricted-operation':
         errorMessage =
           'Registration is currently restricted. Please contact support.';
+        break;
+
+      default:
+        // Use Firebase's error message if available, otherwise use generic message
+        if (firebaseError.message) {
+          // Remove "Firebase: " prefix from error message if present
+          errorMessage = firebaseError.message.replace(/^Firebase:\s*/i, '');
+        }
+        break;
+    }
+
+    const err: APIError = {
+      _type: 'AUTH_ERROR',
+      message: errorMessage,
+      error,
+    };
+    throw err;
+  }
+}
+
+export async function loginWithGoogle(): Promise<LoginResponse> {
+  try {
+    const provider = new GoogleAuthProvider();
+
+    const userCredential = await signInWithPopup(firebaseAuth, provider);
+
+    const user = userCredential.user;
+
+    const token = await user.getIdToken();
+
+    return {
+      success: true,
+      user: {
+        id: user.uid,
+        email: user.email || '',
+        name: user.displayName || user.email?.split('@')[0] || 'User',
+        token: token,
+      },
+    };
+  } catch (error: unknown) {
+    console.error('[loginWithGoogle] error:', error);
+    const firebaseError = error as { code?: string; message?: string };
+    let errorMessage = 'Google sign-in failed. Please try again.';
+
+    switch (firebaseError.code) {
+      case 'auth/popup-closed-by-user':
+        errorMessage =
+          'Sign-in popup was closed. Please try again and complete the sign-in process.';
+        break;
+
+      case 'auth/popup-blocked':
+        errorMessage =
+          'Sign-in popup was blocked by your browser. Please allow popups and try again.';
+        break;
+
+      case 'auth/cancelled-popup-request':
+        errorMessage = 'Sign-in was cancelled. Please try again.';
+        break;
+
+      case 'auth/user-disabled':
+        errorMessage =
+          'This account has been disabled. Please contact support.';
+        break;
+
+      case 'auth/operation-not-allowed':
+        errorMessage = 'Google sign-in is not enabled. Please contact support.';
+        break;
+
+      case 'auth/network-request-failed':
+        errorMessage =
+          'Network error. Please check your internet connection and try again.';
+        break;
+
+      case 'auth/too-many-requests':
+        errorMessage = 'Too many sign-in attempts. Please try again later.';
+        break;
+
+      case 'auth/configuration-not-found':
+      case 'auth/internal-error':
+        errorMessage = 'Authentication service error. Please try again later.';
         break;
 
       default:

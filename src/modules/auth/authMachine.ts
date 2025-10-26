@@ -21,6 +21,9 @@ type AuthEvent =
       data: { email: string; password: string };
     }
   | {
+      type: 'LOGIN_WITH_GOOGLE';
+    }
+  | {
       type: 'REGISTER';
       data: { name: string; email: string; password: string };
     }
@@ -39,6 +42,14 @@ type AuthEvent =
     }
   | {
       type: 'xstate.error.actor.loginUser';
+      error?: APIError;
+    }
+  | {
+      type: 'xstate.done.actor.loginWithGoogle';
+      output: LoginResponse;
+    }
+  | {
+      type: 'xstate.error.actor.loginWithGoogle';
       error?: APIError;
     }
   | {
@@ -74,6 +85,10 @@ const authMachine = setup({
         return Promise.resolve({} as LoginResponse);
       },
     ),
+    loginWithGoogle: fromPromise<LoginResponse, void>(() => {
+      // Implement in hooks
+      return Promise.resolve({} as LoginResponse);
+    }),
     registerUser: fromPromise<
       LoginResponse,
       { name: string; email: string; password: string }
@@ -104,6 +119,7 @@ const authMachine = setup({
       error: ({ event }) => {
         if (
           event.type === 'xstate.error.actor.loginUser' ||
+          event.type === 'xstate.error.actor.loginWithGoogle' ||
           event.type === 'xstate.error.actor.registerUser'
         ) {
           return event.error || null;
@@ -169,6 +185,10 @@ const authMachine = setup({
               target: '#authMachine.Showing Login Form.Logging In',
               actions: 'setCredentials',
             },
+            LOGIN_WITH_GOOGLE: {
+              target: '#authMachine.Showing Login Form.Logging In With Google',
+              actions: 'clearError',
+            },
             SHOW_REGISTER_FORM: {
               target: '#authMachine.Showing Register Form',
               actions: 'clearError',
@@ -184,6 +204,21 @@ const authMachine = setup({
               email: context.email,
               password: context.password,
             }),
+            onDone: {
+              target: '#authMachine.Authenticated',
+              actions: 'setUser',
+            },
+            onError: {
+              target: '#authMachine.Showing Login Form.Idle',
+              actions: 'setError',
+            },
+          },
+        },
+        'Logging In With Google': {
+          tags: 'loading',
+          invoke: {
+            id: 'loginWithGoogle',
+            src: 'loginWithGoogle',
             onDone: {
               target: '#authMachine.Authenticated',
               actions: 'setUser',

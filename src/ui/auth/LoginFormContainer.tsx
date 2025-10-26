@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { FcGoogle } from 'react-icons/fc';
 
 import { APIError } from '@/libs/fetcher';
 import { useForm } from '@/modules/form/useForm';
@@ -10,6 +11,7 @@ type LoginFormData = {
 
 type LoginFormContainerProps = {
   onSubmit: (data: LoginFormData) => void;
+  onGoogleSignIn: () => void;
   isLoading: boolean;
   error: APIError | null;
   onClickRegister: () => void;
@@ -17,6 +19,7 @@ type LoginFormContainerProps = {
 
 function LoginFormContainer({
   onSubmit,
+  onGoogleSignIn,
   isLoading,
   error,
   onClickRegister,
@@ -90,6 +93,23 @@ function LoginFormContainer({
             {isLoading ? t('auth.loginButtonLoading') : t('auth.loginButton')}
           </button>
         </form>
+
+        <div className='mt-6 mb-6 flex items-center'>
+          <div className='flex-1 border-t border-white/20'></div>
+          <span className='px-4 text-purple-200 text-sm font-medium'>
+            {t('auth.orContinueWith')}
+          </span>
+          <div className='flex-1 border-t border-white/20'></div>
+        </div>
+
+        <button
+          type='button'
+          onClick={onGoogleSignIn}
+          disabled={isLoading}
+          className='w-full bg-white hover:bg-gray-50 text-gray-800 font-semibold py-3.5 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 hover:shadow-xl flex items-center justify-center gap-3'>
+          <FcGoogle className='text-2xl' />
+          <span>{t('auth.signInWithGoogle')}</span>
+        </button>
 
         <div className='mt-6 text-center'>
           <button

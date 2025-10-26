@@ -79,7 +79,9 @@
     "firebaseDemo": "Demo Autentikasi Firebase",
     "registerLink": "Daftar",
     "signInLink": "Masuk",
-    "logout": "Keluar"
+    "logout": "Keluar",
+    "orContinueWith": "atau lanjutkan dengan",
+    "signInWithGoogle": "Masuk dengan Google"
   },
   "errors": {
     "fetchError": "Kesalahan {{status}}: {{message}}",

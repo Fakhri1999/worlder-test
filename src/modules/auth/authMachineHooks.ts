@@ -7,7 +7,7 @@ import { firebaseAuth } from '@/libs/firebase';
 import { LoginResponse } from './authEntity';
 import { useAuthUser } from './authHooks';
 import { authMachine } from './authMachine';
-import { loginUser, registerUser } from './authServices';
+import { loginUser, loginWithGoogle, registerUser } from './authServices';
 
 export function useAuthMachine() {
   const { user } = useAuthUser();
@@ -26,6 +26,11 @@ export function useAuthMachine() {
             email: input.email,
             password: input.password,
           });
+
+          return result;
+        }),
+        loginWithGoogle: fromPromise(async () => {
+          const result = await loginWithGoogle();
 
           return result;
         }),
@@ -57,6 +62,7 @@ export function useAuthMachine() {
         setUser: assign(({ event }) => {
           const response =
             event.type === 'xstate.done.actor.loginUser' ||
+            event.type === 'xstate.done.actor.loginWithGoogle' ||
             event.type === 'xstate.done.actor.registerUser'
               ? (event.output as LoginResponse)
               : null;

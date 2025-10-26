@@ -9,6 +9,7 @@ import {
   getMovies,
   getNowPlayingMovies,
   getTopRatedMovies,
+  searchMovies,
 } from './movieServices';
 
 export function useMovieMachine() {
@@ -25,6 +26,10 @@ export function useMovieMachine() {
         }),
         fetchTopRated: fromPromise(async ({ input }) => {
           const result = await getTopRatedMovies(input.page);
+          return result;
+        }),
+        searchMovies: fromPromise(async ({ input }) => {
+          const result = await searchMovies(input.query, input.page);
           return result;
         }),
         fetchFavorites: fromPromise(async () => {

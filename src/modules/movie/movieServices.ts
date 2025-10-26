@@ -69,6 +69,23 @@ export async function getTopRatedMovies(
   );
 }
 
+export async function searchMovies(
+  query: string,
+  page: number = 1,
+): Promise<GetMoviesResponse> {
+  return fetcher(
+    {
+      url: `${TMDB_BASE_URL}/search/movie`,
+      params: { query, page },
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+      },
+    },
+    GetMoviesResponseSchema,
+  );
+}
+
 export async function getMovieDetail(movieId: number): Promise<MovieDetail> {
   return fetcher(
     {

@@ -1,5 +1,7 @@
 import clsx from 'clsx';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { IoClose } from 'react-icons/io5';
+import { MdSearch } from 'react-icons/md';
 import { Link, useSearchParams } from 'react-router-dom';
 import { matchPI } from 'ts-adt';
 
@@ -71,6 +73,8 @@ function Index() {
       : 'popular';
 
   const [category, setCategory] = useState<MovieCategory>(initialCategory);
+  const [searchInput, setSearchInput] = useState('');
+  const searchDebounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const [movieState, movieSend] = useMovieMachine();
   const [favoritesState, favoritesSend] = useFavoritesMachine();
@@ -81,7 +85,8 @@ function Index() {
 
   // Filter categories based on authentication
   const visibleCategories = useMemo(
-    () => CATEGORY_CONFIGS.filter((config) => !config.requiresAuth || user?.uid),
+    () =>
+      CATEGORY_CONFIGS.filter((config) => !config.requiresAuth || user?.uid),
     [user?.uid],
   );
 
@@ -101,11 +106,23 @@ function Index() {
     favoritesSend({ type: 'LOAD_FAVORITES' });
   }, [favoritesSend, user?.uid, isAuthReady]);
 
-  // Fetch initial category from URL on mount (only once)
+  // Fetch initial data from URL on mount (only once)
   useEffect(() => {
     if (initialFetchDone.current) return;
 
-    if (category === 'favorites') {
+    // Check if there's a search query in URL
+    const urlSearch = searchParams.get('search');
+    const urlPage = searchParams.get('page');
+    const page = urlPage ? parseInt(urlPage, 10) : 1;
+
+    if (urlSearch) {
+      // Initialize with search
+      setSearchInput(urlSearch);
+      movieSend({
+        type: 'SEARCH_MOVIES',
+        data: { query: urlSearch, page },
+      });
+    } else if (category === 'favorites') {
       movieSend({ type: 'FETCH_FAVORITES' });
     } else if (category === 'now_playing') {
       movieSend({ type: 'FETCH_NOW_PLAYING', data: { page: 1 } });
@@ -116,7 +133,7 @@ function Index() {
     }
 
     initialFetchDone.current = true;
-  }, [category, movieSend]);
+  }, [category, movieSend, searchParams]);
 
   const handleCategoryChange = (newCategory: MovieCategory) => {
     setCategory(newCategory);
@@ -156,6 +173,20 @@ function Index() {
   };
 
   const handlePageChange = (page: number) => {
+    // If in search mode, paginate search results
+    if (movieState.context.searchQuery) {
+      movieSend({
+        type: 'SEARCH_MOVIES',
+        data: { query: movieState.context.searchQuery, page },
+      });
+      setSearchParams({
+        search: movieState.context.searchQuery,
+        page: String(page),
+      });
+      return;
+    }
+
+    // Otherwise, paginate category results
     if (category === 'now_playing') {
       movieSend({ type: 'FETCH_NOW_PLAYING', data: { page } });
     } else if (category === 'top_rated') {
@@ -164,6 +195,65 @@ function Index() {
       movieSend({ type: 'FETCH_MOVIES', data: { page } });
     }
   };
+
+  const handleSearch = useCallback(
+    (query: string, page: number = 1) => {
+      if (!query.trim()) {
+        return;
+      }
+
+      movieSend({ type: 'SEARCH_MOVIES', data: { query: query.trim(), page } });
+      setSearchParams({ search: query.trim(), page: String(page) });
+    },
+    [movieSend, setSearchParams],
+  );
+
+  const handleSearchInput = useCallback(
+    (value: string) => {
+      setSearchInput(value);
+
+      // Clear previous timer
+      if (searchDebounceTimer.current) {
+        clearTimeout(searchDebounceTimer.current);
+      }
+
+      // If input is empty, clear search immediately
+      if (!value.trim()) {
+        handleClearSearch();
+        return;
+      }
+
+      // Debounce search by 500ms
+      searchDebounceTimer.current = setTimeout(() => {
+        handleSearch(value);
+      }, 500);
+    },
+    [handleSearch],
+  );
+
+  const handleClearSearch = useCallback(() => {
+    setSearchInput('');
+    movieSend({ type: 'CLEAR_SEARCH' });
+
+    // Clear debounce timer
+    if (searchDebounceTimer.current) {
+      clearTimeout(searchDebounceTimer.current);
+    }
+
+    // Restore category view
+    setSearchParams({ category });
+
+    // Fetch the current category
+    if (category === 'favorites') {
+      movieSend({ type: 'FETCH_FAVORITES' });
+    } else if (category === 'now_playing') {
+      movieSend({ type: 'FETCH_NOW_PLAYING', data: { page: 1 } });
+    } else if (category === 'top_rated') {
+      movieSend({ type: 'FETCH_TOP_RATED', data: { page: 1 } });
+    } else {
+      movieSend({ type: 'FETCH_MOVIES', data: { page: 1 } });
+    }
+  }, [category, movieSend, setSearchParams]);
 
   return (
     <PageProvider>
@@ -221,22 +311,64 @@ function Index() {
               </Link>
             </div>
 
-            {/* Category Tabs */}
-            <div className='flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide'>
-              {visibleCategories.map((config) => (
-                <button
-                  key={config.value}
-                  type='button'
-                  onClick={() => handleCategoryChange(config.value)}
-                  className={`cursor-pointer px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
-                    category === config.value
-                      ? `bg-linear-to-r ${config.gradient} text-white shadow-lg ${config.shadow}`
-                      : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
-                  }`}>
-                  {config.emoji} {config.label}
-                </button>
-              ))}
+            {/* Search Bar */}
+            <div className='mb-6 animate-slideInUp'>
+              <div className='relative max-w-2xl mx-auto'>
+                <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
+                  <MdSearch className='w-6 h-6 text-gray-400 z-10' />
+                </div>
+                <input
+                  type='text'
+                  value={searchInput}
+                  onChange={(e) => handleSearchInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && searchInput.trim()) {
+                      // Clear debounce and search immediately on Enter
+                      if (searchDebounceTimer.current) {
+                        clearTimeout(searchDebounceTimer.current);
+                      }
+                      handleSearch(searchInput);
+                    }
+                  }}
+                  placeholder='Search for movies...'
+                  className='w-full pl-12 pr-12 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300'
+                />
+                {searchInput && (
+                  <button
+                    onClick={handleClearSearch}
+                    className='absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer hover:text-white text-gray-400 transition-colors'>
+                    {IoClose({ className: 'w-6 h-6' })}
+                  </button>
+                )}
+              </div>
+              {movieState.context.searchQuery && (
+                <p className='text-center text-gray-300 mt-3'>
+                  Search results for:{' '}
+                  <span className='text-white font-semibold'>
+                    &quot;{movieState.context.searchQuery}&quot;
+                  </span>
+                </p>
+              )}
             </div>
+
+            {/* Category Tabs */}
+            {!movieState.context.searchQuery && (
+              <div className='flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide'>
+                {visibleCategories.map((config) => (
+                  <button
+                    key={config.value}
+                    type='button'
+                    onClick={() => handleCategoryChange(config.value)}
+                    className={`cursor-pointer px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                      category === config.value
+                        ? `bg-linear-to-r ${config.gradient} text-white shadow-lg ${config.shadow}`
+                        : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
+                    }`}>
+                    {config.emoji} {config.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {movieState.hasTag('loading') && (
               <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
@@ -302,103 +434,129 @@ function Index() {
               </div>
             )}
 
-            {/* Movies Grid */}
-            {movieState.matches('Idle') && movieState.context.movies && (
-              <>
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
-                  {movieState.context.movies.map(
-                    (movie: Movie, index: number) => (
-                      <div
-                        key={movie.id}
-                        className='animate-fadeInUp'
-                        style={{ animationDelay: `${index * 10}ms` }}>
-                        <MovieCard
-                          movie={movie}
-                          isFavorite={favoritesState.context.favoriteIds.has(
-                            movie.id,
-                          )}
-                          isLoadingFavorites={
-                            !favoritesState.context.isInitialized ||
-                            favoritesState.matches('Loading Favorites')
-                          }
-                          onToggleFavorite={handleToggleFavorite}
-                        />
-                      </div>
-                    ),
-                  )}
-                </div>
-
-                {/* Pagination - Only show for TMDB results, not favorites */}
-                {movieState.context.mode === 'tmdb' && (
-                  <div className='flex justify-center items-center gap-4 mt-12 mb-8'>
-                    <button
-                      type='button'
-                      onClick={() =>
-                        handlePageChange(
-                          Math.max(1, movieState.context.currentPage - 1),
-                        )
-                      }
-                      disabled={movieState.context.currentPage === 1}
-                      className={clsx(
-                        'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
-                        movieState.context.currentPage === 1 &&
-                          'cursor-not-allowed',
-                      )}>
-                      <svg
-                        className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'>
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M15 19l-7-7 7-7'
-                        />
-                      </svg>
-                      Previous
-                    </button>
-                    <div className='px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
-                      <span className='text-sm opacity-75'>Page</span>{' '}
-                      <span className='text-xl'>
-                        {movieState.context.currentPage}
-                      </span>{' '}
-                      <span className='text-sm opacity-75'>
-                        of {movieState.context.totalPage}
-                      </span>
-                    </div>
-                    <button
-                      type='button'
-                      onClick={() =>
-                        handlePageChange(movieState.context.currentPage + 1)
-                      }
-                      disabled={
-                        movieState.context.currentPage >=
-                        movieState.context.totalPage
-                      }
-                      className={clsx(
-                        'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
-                        movieState.context.currentPage >=
-                          movieState.context.totalPage && 'cursor-not-allowed',
-                      )}>
-                      Next
-                      <svg
-                        className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
-                        fill='none'
-                        stroke='currentColor'
-                        viewBox='0 0 24 24'>
-                        <path
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth={2}
-                          d='M9 5l7 7-7 7'
-                        />
-                      </svg>
-                    </button>
+            {/* Empty Search Results */}
+            {movieState.matches('Idle') &&
+              movieState.context.searchQuery &&
+              movieState.context.movies.length === 0 && (
+                <div className='bg-linear-to-r from-gray-800/20 to-gray-900/20 backdrop-blur-sm border border-gray-700/30 rounded-2xl p-12 text-center shadow-xl'>
+                  <div className='w-20 h-20 bg-gray-700/20 rounded-full flex items-center justify-center mx-auto mb-6'>
+                    {MdSearch({ className: 'w-10 h-10 text-gray-400' })}
                   </div>
-                )}
-              </>
-            )}
+                  <p className='text-white font-bold text-2xl mb-3'>
+                    No movies found
+                  </p>
+                  <p className='text-gray-300 mb-6'>
+                    We couldn&apos;t find any movies matching &quot;
+                    {movieState.context.searchQuery}&quot;
+                  </p>
+                  <button
+                    onClick={handleClearSearch}
+                    className='px-6 py-3 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold'>
+                    Clear Search
+                  </button>
+                </div>
+              )}
+
+            {/* Movies Grid */}
+            {movieState.matches('Idle') &&
+              movieState.context.movies &&
+              movieState.context.movies.length > 0 && (
+                <>
+                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
+                    {movieState.context.movies.map(
+                      (movie: Movie, index: number) => (
+                        <div
+                          key={movie.id}
+                          className='animate-fadeInUp'
+                          style={{ animationDelay: `${index * 10}ms` }}>
+                          <MovieCard
+                            movie={movie}
+                            isFavorite={favoritesState.context.favoriteIds.has(
+                              movie.id,
+                            )}
+                            isLoadingFavorites={
+                              !favoritesState.context.isInitialized ||
+                              favoritesState.matches('Loading Favorites')
+                            }
+                            onToggleFavorite={handleToggleFavorite}
+                          />
+                        </div>
+                      ),
+                    )}
+                  </div>
+
+                  {/* Pagination - Only show for TMDB results, not favorites */}
+                  {movieState.context.mode === 'tmdb' && (
+                    <div className='flex justify-center items-center gap-4 mt-12 mb-8'>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          handlePageChange(
+                            Math.max(1, movieState.context.currentPage - 1),
+                          )
+                        }
+                        disabled={movieState.context.currentPage === 1}
+                        className={clsx(
+                          'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
+                          movieState.context.currentPage === 1 &&
+                            'cursor-not-allowed',
+                        )}>
+                        <svg
+                          className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M15 19l-7-7 7-7'
+                          />
+                        </svg>
+                        Previous
+                      </button>
+                      <div className='px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
+                        <span className='text-sm opacity-75'>Page</span>{' '}
+                        <span className='text-xl'>
+                          {movieState.context.currentPage}
+                        </span>{' '}
+                        <span className='text-sm opacity-75'>
+                          of {movieState.context.totalPage}
+                        </span>
+                      </div>
+                      <button
+                        type='button'
+                        onClick={() =>
+                          handlePageChange(movieState.context.currentPage + 1)
+                        }
+                        disabled={
+                          movieState.context.currentPage >=
+                          movieState.context.totalPage
+                        }
+                        className={clsx(
+                          'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
+                          movieState.context.currentPage >=
+                            movieState.context.totalPage &&
+                            'cursor-not-allowed',
+                        )}>
+                        Next
+                        <svg
+                          className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
+                          fill='none'
+                          stroke='currentColor'
+                          viewBox='0 0 24 24'>
+                          <path
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                            strokeWidth={2}
+                            d='M9 5l7 7-7 7'
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
           </div>
         </div>
       </div>

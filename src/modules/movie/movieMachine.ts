@@ -10,6 +10,7 @@ type MovieContext = {
   movies: Movie[];
   error: APIError | null;
   mode: 'tmdb' | 'favorites';
+  searchQuery: string | null;
 };
 
 type MovieEvent =
@@ -27,6 +28,13 @@ type MovieEvent =
     }
   | {
       type: 'FETCH_FAVORITES';
+    }
+  | {
+      type: 'SEARCH_MOVIES';
+      data: { query: string; page: number };
+    }
+  | {
+      type: 'CLEAR_SEARCH';
     }
   | {
       type: 'xstate.done.actor.fetchMovies';
@@ -53,6 +61,14 @@ type MovieEvent =
       error?: APIError;
     }
   | {
+      type: 'xstate.done.actor.searchMovies';
+      output: GetMoviesResponse;
+    }
+  | {
+      type: 'xstate.error.actor.searchMovies';
+      error?: APIError;
+    }
+  | {
       type: 'xstate.done.actor.fetchFavorites';
       output: FavoriteMovie[];
     }
@@ -67,6 +83,7 @@ const initContext: MovieContext = {
   movies: [],
   error: null,
   mode: 'tmdb',
+  searchQuery: null,
 };
 
 const movieMachine = setup({
@@ -85,6 +102,13 @@ const movieMachine = setup({
       return Promise.resolve({} as GetMoviesResponse);
     }),
     fetchTopRated: fromPromise<GetMoviesResponse, { page: number }>(() => {
+      // Implement in hooks
+      return Promise.resolve({} as GetMoviesResponse);
+    }),
+    searchMovies: fromPromise<
+      GetMoviesResponse,
+      { query: string; page: number }
+    >(() => {
       // Implement in hooks
       return Promise.resolve({} as GetMoviesResponse);
     }),
@@ -112,7 +136,34 @@ const movieMachine = setup({
         currentPage: response.page,
         mode: 'tmdb' as const,
         error: null,
+        searchQuery: null,
       };
+    }),
+    updateSearchData: assign(({ event, context }) => {
+      const response =
+        event.type === 'xstate.done.actor.searchMovies' ? event.output : null;
+
+      if (!response) {
+        return {};
+      }
+
+      return {
+        movies: response.results,
+        totalPage: response.total_pages,
+        currentPage: response.page,
+        mode: 'tmdb' as const,
+        error: null,
+        searchQuery: context.searchQuery,
+      };
+    }),
+    storeSearchQuery: assign(({ event }) => {
+      if (event.type === 'SEARCH_MOVIES') {
+        return { searchQuery: event.data.query };
+      }
+      return {};
+    }),
+    clearSearch: assign({
+      searchQuery: null,
     }),
     updateFavoritesData: assign(({ event }) => {
       const favorites =
@@ -135,6 +186,7 @@ const movieMachine = setup({
           event.type === 'xstate.error.actor.fetchMovies' ||
           event.type === 'xstate.error.actor.fetchNowPlaying' ||
           event.type === 'xstate.error.actor.fetchTopRated' ||
+          event.type === 'xstate.error.actor.searchMovies' ||
           event.type === 'xstate.error.actor.fetchFavorites'
         ) {
           return event.error || null;
@@ -154,6 +206,13 @@ const movieMachine = setup({
         FETCH_NOW_PLAYING: 'Fetching Now Playing',
         FETCH_TOP_RATED: 'Fetching Top Rated',
         FETCH_FAVORITES: 'Fetching Favorites',
+        SEARCH_MOVIES: {
+          target: 'Searching Movies',
+          actions: 'storeSearchQuery',
+        },
+        CLEAR_SEARCH: {
+          actions: 'clearSearch',
+        },
       },
     },
     'Fetching Movies': {
@@ -227,6 +286,30 @@ const movieMachine = setup({
         onDone: {
           target: 'Idle',
           actions: 'updateFavoritesData',
+        },
+        onError: {
+          target: 'Idle',
+          actions: 'setError',
+        },
+      },
+    },
+    'Searching Movies': {
+      tags: 'loading',
+      invoke: {
+        id: 'searchMovies',
+        src: 'searchMovies',
+        input: ({ context, event }) => {
+          if (event.type === 'SEARCH_MOVIES') {
+            return { query: event.data.query, page: event.data.page };
+          }
+          return {
+            query: context.searchQuery || '',
+            page: context.currentPage,
+          };
+        },
+        onDone: {
+          target: 'Idle',
+          actions: 'updateSearchData',
         },
         onError: {
           target: 'Idle',

@@ -1,6 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
 
-import './libs/i18n';
 import { SuspenseFallbackProvider } from './providers/SuspenseFallbackProvider';
 import { Router } from './routes/Router';
 

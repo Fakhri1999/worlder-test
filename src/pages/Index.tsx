@@ -97,31 +97,33 @@ function Index() {
           {state.matches('Authenticated') && (
             <div className='w-full max-w-2xl animate-fadeIn'>
               {/* Welcome Card */}
-              <div className='bg-white/10 backdrop-blur-xl shadow-2xl rounded-3xl px-8 py-10 mb-6 border border-white/20'>
-                <div className='text-center mb-8'>
-                  <h1 className='text-5xl font-black mb-3 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-slideInDown'>
+              <div className='bg-white/10 backdrop-blur-xl shadow-2xl rounded-3xl px-4 py-6 sm:px-8 sm:py-10 mb-6 border border-white/20'>
+                <div className='text-center mb-6 sm:mb-8'>
+                  <h1 className='text-3xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-slideInDown'>
                     {t('home.title')}
                   </h1>
-                  <p className='text-purple-200 text-lg'>
+                  <p className='text-purple-200 text-base sm:text-lg'>
                     {t('home.subtitle')}
                   </p>
                 </div>
 
                 {/* User Info Card */}
-                <div className='bg-linear-to-br from-green-500/20 to-blue-500/20 backdrop-blur-sm border border-green-400/30 rounded-2xl p-6 mb-6 shadow-lg'>
-                  <div className='flex items-center gap-4 mb-4'>
-                    <div className='w-16 h-16 bg-linear-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg'>
+                <div className='bg-linear-to-br from-green-500/20 to-blue-500/20 backdrop-blur-sm border border-green-400/30 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg'>
+                  <div className='flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4'>
+                    <div className='w-12 h-12 sm:w-16 sm:h-16 bg-linear-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg flex-shrink-0'>
                       {user?.name?.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <h2 className='text-white text-2xl font-bold'>
+                    <div className='min-w-0 flex-1'>
+                      <h2 className='text-white text-lg sm:text-xl md:text-2xl font-bold truncate'>
                         {user?.name}
                       </h2>
-                      <p className='text-green-200 text-sm'>{user?.email}</p>
+                      <p className='text-green-200 text-xs sm:text-sm truncate'>
+                        {user?.email}
+                      </p>
                     </div>
                   </div>
-                  <div className='bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10'>
-                    <p className='text-gray-300 text-xs'>
+                  <div className='bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-white/10'>
+                    <p className='text-gray-300 text-xs break-all'>
                       <span className='font-semibold text-purple-300'>
                         User ID:
                       </span>{' '}
@@ -131,13 +133,13 @@ function Index() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className='space-y-4'>
+                <div className='space-y-3 sm:space-y-4'>
                   <Link to={routesUrl.movies} className='block'>
                     <button
                       type='button'
-                      className='group w-full cursor-pointer px-6 py-4 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 flex items-center justify-center gap-3'>
+                      className='group w-full cursor-pointer px-4 py-3 sm:px-6 sm:py-4 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 flex items-center justify-center gap-2 sm:gap-3'>
                       <svg
-                        className='w-6 h-6 transform group-hover:scale-110 transition-transform'
+                        className='w-5 h-5 sm:w-6 sm:h-6 transform group-hover:scale-110 transition-transform flex-shrink-0'
                         fill='none'
                         stroke='currentColor'
                         viewBox='0 0 24 24'>
@@ -148,9 +150,9 @@ function Index() {
                           d='M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z'
                         />
                       </svg>
-                      {t('home.exploreMovies')}
+                      <span className='truncate'>{t('home.exploreMovies')}</span>
                       <svg
-                        className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
+                        className='w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform flex-shrink-0'
                         fill='none'
                         stroke='currentColor'
                         viewBox='0 0 24 24'>
@@ -167,9 +169,9 @@ function Index() {
                   <button
                     type='button'
                     onClick={handleLogout}
-                    className='group cursor-pointer w-full px-6 py-3 bg-white/10 backdrop-blur-sm hover:bg-red-500/20 text-white rounded-xl font-semibold border border-white/20 hover:border-red-400/50 transition-all duration-300 flex items-center justify-center gap-2'>
+                    className='group cursor-pointer w-full px-4 py-2.5 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-sm hover:bg-red-500/20 text-white rounded-xl font-semibold text-sm sm:text-base border border-white/20 hover:border-red-400/50 transition-all duration-300 flex items-center justify-center gap-2'>
                     <svg
-                      className='w-5 h-5 transform group-hover:scale-110 transition-transform'
+                      className='w-4 h-4 sm:w-5 sm:h-5 transform group-hover:scale-110 transition-transform flex-shrink-0'
                       fill='none'
                       stroke='currentColor'
                       viewBox='0 0 24 24'>
@@ -180,7 +182,7 @@ function Index() {
                         d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'
                       />
                     </svg>
-                    {t('auth.logout')}
+                    <span>{t('auth.logout')}</span>
                   </button>
                 </div>
               </div>

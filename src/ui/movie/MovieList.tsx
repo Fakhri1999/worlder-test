@@ -79,16 +79,16 @@ function MovieList({
       <div className='absolute top-40 right-10 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000' />
       <div className='absolute -bottom-8 left-1/2 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000' />
 
-      <div className='relative container mx-auto px-4 py-8 md:py-12'>
-        <div className='flex flex-col mb-12 animate-fadeIn'>
-          <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-8'>
-            <div className='mb-6 md:mb-0'>
-              <h1 className='text-6xl md:text-7xl font-black bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 tracking-tight animate-slideInLeft'>
+      <div className='relative container mx-auto px-4 py-6 sm:py-8 md:py-12'>
+        <div className='flex flex-col mb-8 sm:mb-10 md:mb-12 animate-fadeIn'>
+          <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8'>
+            <div className='mb-4 sm:mb-6 md:mb-0'>
+              <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 sm:mb-4 tracking-tight animate-slideInLeft'>
                 {t('movies.title')}
               </h1>
-              <p className='text-gray-300 text-lg flex items-center gap-2 animate-slideInLeft animation-delay-100'>
+              <p className='text-gray-300 text-sm sm:text-base md:text-lg flex items-center gap-2 animate-slideInLeft animation-delay-100'>
                 <svg
-                  className='w-5 h-5 text-yellow-400 animate-pulse'
+                  className='w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 animate-pulse flex-shrink-0'
                   fill='currentColor'
                   viewBox='0 0 20 20'>
                   <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
@@ -96,13 +96,13 @@ function MovieList({
                 {t('movies.subtitle')}
               </p>
             </div>
-            <div className='flex items-center gap-4'>{headerActions}</div>
+            <div className='flex items-center gap-3 sm:gap-4'>{headerActions}</div>
           </div>
 
-          <div className='mb-6 animate-slideInUp'>
+          <div className='mb-5 sm:mb-6 animate-slideInUp'>
             <div className='relative max-w-2xl mx-auto'>
-              <div className='absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none'>
-                <MdSearch className='w-6 h-6 text-gray-400 z-10' />
+              <div className='absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none'>
+                <MdSearch className='w-5 h-5 sm:w-6 sm:h-6 text-gray-400 z-10' />
               </div>
               <input
                 type='text'
@@ -114,18 +114,18 @@ function MovieList({
                   }
                 }}
                 placeholder={t('movies.searchPlaceholder')}
-                className='w-full pl-12 pr-12 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300'
+                className='w-full pl-10 pr-10 py-3 sm:pl-12 sm:pr-12 sm:py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm sm:text-base text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300'
               />
               {searchInput && (
                 <button
                   onClick={onClearSearch}
-                  className='absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer hover:text-white text-gray-400 transition-colors'>
-                  <IoClose className='w-6 h-6' />
+                  className='absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center cursor-pointer hover:text-white text-gray-400 transition-colors'>
+                  <IoClose className='w-5 h-5 sm:w-6 sm:h-6' />
                 </button>
               )}
             </div>
             {searchQuery && (
-              <p className='text-center text-gray-300 mt-3'>
+              <p className='text-center text-gray-300 text-sm sm:text-base mt-3'>
                 {t('movies.searchResultsFor')}{' '}
                 <span className='text-white font-semibold'>
                   &quot;{searchQuery}&quot;
@@ -135,13 +135,13 @@ function MovieList({
           </div>
 
           {!searchQuery && (
-            <div className='flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide'>
+            <div className='flex gap-2 sm:gap-3 mb-6 sm:mb-8 overflow-x-auto pb-2 scrollbar-hide'>
               {isLoadingCategories ? (
                 <>
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div
                       key={index}
-                      className='px-6 py-3 rounded-xl bg-white/10 backdrop-blur-sm animate-pulse min-w-[132px] h-[48px]'
+                      className='px-4 py-2 sm:px-6 sm:py-3 rounded-xl bg-white/10 backdrop-blur-sm animate-pulse min-w-[120px] sm:min-w-[132px] h-[40px] sm:h-[48px] flex-shrink-0'
                     />
                   ))}
                 </>
@@ -151,7 +151,7 @@ function MovieList({
                     key={category.value}
                     type='button'
                     onClick={() => onCategoryChange(category.value)}
-                    className={`cursor-pointer px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    className={`cursor-pointer px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex-shrink-0 ${
                       selectedCategory === category.value
                         ? `bg-linear-to-r ${category.gradient} text-white shadow-lg ${category.shadow}`
                         : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
@@ -263,17 +263,17 @@ function MovieList({
               </div>
 
               {mode === 'tmdb' && (
-                <div className='flex justify-center items-center gap-4 mt-12 mb-8'>
+                <div className='flex justify-center items-center gap-2 sm:gap-4 mt-8 sm:mt-12 mb-6 sm:mb-8'>
                   <button
                     type='button'
                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={clsx(
-                      'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
+                      'group px-3 py-2 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-1 sm:gap-2 disabled:hover:bg-white/10 cursor-pointer text-sm sm:text-base',
                       currentPage === 1 && 'cursor-not-allowed',
                     )}>
                     <svg
-                      className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
+                      className='w-4 h-4 sm:w-5 sm:h-5 transform group-hover:-translate-x-1 transition-transform'
                       fill='none'
                       stroke='currentColor'
                       viewBox='0 0 24 24'>
@@ -284,14 +284,16 @@ function MovieList({
                         d='M15 19l-7-7 7-7'
                       />
                     </svg>
-                    {t('movies.pagination.previous')}
+                    <span className='hidden sm:inline'>
+                      {t('movies.pagination.previous')}
+                    </span>
                   </button>
-                  <div className='px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
-                    <span className='text-sm opacity-75'>
+                  <div className='px-3 py-2 sm:px-6 sm:py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
+                    <span className='text-xs sm:text-sm opacity-75'>
                       {t('movies.pagination.page')}
                     </span>{' '}
-                    <span className='text-xl'>{currentPage}</span>{' '}
-                    <span className='text-sm opacity-75'>
+                    <span className='text-lg sm:text-xl'>{currentPage}</span>{' '}
+                    <span className='text-xs sm:text-sm opacity-75'>
                       {t('movies.pagination.of')} {totalPage}
                     </span>
                   </div>
@@ -300,12 +302,14 @@ function MovieList({
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage >= totalPage}
                     className={clsx(
-                      'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
+                      'group px-3 py-2 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-1 sm:gap-2 disabled:hover:bg-white/10 cursor-pointer text-sm sm:text-base',
                       currentPage >= totalPage && 'cursor-not-allowed',
                     )}>
-                    {t('movies.pagination.next')}
+                    <span className='hidden sm:inline'>
+                      {t('movies.pagination.next')}
+                    </span>
                     <svg
-                      className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
+                      className='w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1 transition-transform'
                       fill='none'
                       stroke='currentColor'
                       viewBox='0 0 24 24'>

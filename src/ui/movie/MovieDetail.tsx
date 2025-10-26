@@ -29,17 +29,17 @@ function MovieDetail({
         }}
       />
 
-      <div className='relative container mx-auto px-4 py-8 md:py-12'>
+      <div className='relative container mx-auto px-4 py-6 sm:py-8 md:py-12'>
         {headerActions}
 
         {isLoading && (
           <div className='animate-fadeIn'>
-            <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+            <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8'>
               <div className='lg:col-span-1'>
                 <div className='w-full aspect-2/3 bg-gray-800/50 rounded-2xl animate-pulse' />
               </div>
 
-              <div className='lg:col-span-2 space-y-6'>
+              <div className='lg:col-span-2 space-y-4 sm:space-y-6'>
                 <div className='space-y-3'>
                   <div className='h-12 bg-gray-800/50 rounded-xl w-3/4 animate-pulse' />
                 </div>
@@ -129,7 +129,7 @@ function MovieDetail({
 
         {movieDetail && !isLoading && (
           <div className='animate-fadeIn'>
-            <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+            <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8'>
               <div className='lg:col-span-1'>
                 {movieDetail.poster_path ? (
                   <img
@@ -139,60 +139,60 @@ function MovieDetail({
                   />
                 ) : (
                   <div className='w-full aspect-2/3 bg-gray-800 rounded-2xl flex items-center justify-center'>
-                    <span className='text-gray-500 text-xl'>
+                    <span className='text-gray-500 text-base sm:text-xl'>
                       {t('movieDetail.noImage')}
                     </span>
                   </div>
                 )}
               </div>
 
-              <div className='lg:col-span-2 space-y-6'>
+              <div className='lg:col-span-2 space-y-4 sm:space-y-6'>
                 <div>
-                  <h1 className='text-5xl font-black text-white mb-2'>
+                  <h1 className='text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2'>
                     {movieDetail.title}
                   </h1>
                   {movieDetail.tagline && (
-                    <p className='text-xl text-gray-400 italic'>
+                    <p className='text-base sm:text-lg md:text-xl text-gray-400 italic'>
                       &quot;{movieDetail.tagline}&quot;
                     </p>
                   )}
                 </div>
 
-                <div className='flex flex-wrap gap-4 items-center'>
-                  <div className='flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20'>
+                <div className='flex flex-wrap gap-2 sm:gap-4 items-center'>
+                  <div className='flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-white/20'>
                     <svg
-                      className='w-5 h-5 text-yellow-400'
+                      className='w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 flex-shrink-0'
                       fill='currentColor'
                       viewBox='0 0 20 20'>
                       <path d='M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z' />
                     </svg>
-                    <span className='text-white font-bold'>
+                    <span className='text-white font-bold text-sm sm:text-base'>
                       {movieDetail.vote_average.toFixed(1)}
                     </span>
-                    <span className='text-gray-400 text-sm'>
+                    <span className='text-gray-400 text-xs sm:text-sm'>
                       ({movieDetail.vote_count} {t('movieDetail.votes')})
                     </span>
                   </div>
 
                   {movieDetail.release_date && (
-                    <div className='bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20'>
-                      <span className='text-white font-semibold'>
+                    <div className='bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-white/20'>
+                      <span className='text-white font-semibold text-sm sm:text-base'>
                         {new Date(movieDetail.release_date).getFullYear()}
                       </span>
                     </div>
                   )}
 
                   {movieDetail.runtime && (
-                    <div className='bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20'>
-                      <span className='text-white font-semibold'>
+                    <div className='bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-white/20'>
+                      <span className='text-white font-semibold text-sm sm:text-base'>
                         {Math.floor(movieDetail.runtime / 60)}h{' '}
                         {movieDetail.runtime % 60}m
                       </span>
                     </div>
                   )}
 
-                  <div className='bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/20'>
-                    <span className='text-white font-semibold'>
+                  <div className='bg-white/10 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-white/20'>
+                    <span className='text-white font-semibold text-sm sm:text-base'>
                       {movieDetail.status}
                     </span>
                   </div>
@@ -200,7 +200,7 @@ function MovieDetail({
 
                 {movieDetail.genres.length > 0 && (
                   <div>
-                    <h3 className='text-gray-400 text-sm font-semibold mb-2'>
+                    <h3 className='text-gray-400 text-xs sm:text-sm font-semibold mb-2'>
                       {t('movieDetail.genres').toUpperCase()}
                     </h3>
                     <div className='flex flex-wrap gap-2'>
@@ -208,7 +208,7 @@ function MovieDetail({
                         (genre: { id: number; name: string }) => (
                           <span
                             key={genre.id}
-                            className='px-4 py-2 bg-linear-to-r from-blue-500/20 to-purple-600/20 text-white rounded-xl border border-blue-500/30 text-sm font-semibold'>
+                            className='px-3 py-1.5 sm:px-4 sm:py-2 bg-linear-to-r from-blue-500/20 to-purple-600/20 text-white rounded-xl border border-blue-500/30 text-xs sm:text-sm font-semibold'>
                             {genre.name}
                           </span>
                         ),
@@ -219,53 +219,53 @@ function MovieDetail({
 
                 {movieDetail.overview && (
                   <div>
-                    <h3 className='text-gray-400 text-sm font-semibold mb-2'>
+                    <h3 className='text-gray-400 text-xs sm:text-sm font-semibold mb-2'>
                       {t('movieDetail.overview').toUpperCase()}
                     </h3>
-                    <p className='text-white text-lg leading-relaxed'>
+                    <p className='text-white text-sm sm:text-base md:text-lg leading-relaxed'>
                       {movieDetail.overview}
                     </p>
                   </div>
                 )}
 
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4'>
                   {movieDetail.budget > 0 && (
-                    <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
-                      <h4 className='text-gray-400 text-sm font-semibold mb-1'>
+                    <div className='bg-white/5 backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/10'>
+                      <h4 className='text-gray-400 text-xs sm:text-sm font-semibold mb-1'>
                         {t('movieDetail.budget')}
                       </h4>
-                      <p className='text-white text-xl font-bold'>
+                      <p className='text-white text-lg sm:text-xl font-bold'>
                         ${movieDetail.budget.toLocaleString()}
                       </p>
                     </div>
                   )}
 
                   {movieDetail.revenue > 0 && (
-                    <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
-                      <h4 className='text-gray-400 text-sm font-semibold mb-1'>
+                    <div className='bg-white/5 backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/10'>
+                      <h4 className='text-gray-400 text-xs sm:text-sm font-semibold mb-1'>
                         {t('movieDetail.revenue')}
                       </h4>
-                      <p className='text-white text-xl font-bold'>
+                      <p className='text-white text-lg sm:text-xl font-bold'>
                         ${movieDetail.revenue.toLocaleString()}
                       </p>
                     </div>
                   )}
 
-                  <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
-                    <h4 className='text-gray-400 text-sm font-semibold mb-1'>
+                  <div className='bg-white/5 backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/10'>
+                    <h4 className='text-gray-400 text-xs sm:text-sm font-semibold mb-1'>
                       {t('movieDetail.originalLanguage')}
                     </h4>
-                    <p className='text-white text-xl font-bold uppercase'>
+                    <p className='text-white text-lg sm:text-xl font-bold uppercase'>
                       {movieDetail.original_language}
                     </p>
                   </div>
 
                   {movieDetail.original_title !== movieDetail.title && (
-                    <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
-                      <h4 className='text-gray-400 text-sm font-semibold mb-1'>
+                    <div className='bg-white/5 backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/10'>
+                      <h4 className='text-gray-400 text-xs sm:text-sm font-semibold mb-1'>
                         {t('movieDetail.originalTitle')}
                       </h4>
-                      <p className='text-white text-xl font-bold'>
+                      <p className='text-white text-base sm:text-lg md:text-xl font-bold break-words'>
                         {movieDetail.original_title}
                       </p>
                     </div>
@@ -274,10 +274,10 @@ function MovieDetail({
 
                 {movieDetail.production_companies.length > 0 && (
                   <div>
-                    <h3 className='text-gray-400 text-sm font-semibold mb-3'>
+                    <h3 className='text-gray-400 text-xs sm:text-sm font-semibold mb-2 sm:mb-3'>
                       {t('movieDetail.productionCompanies').toUpperCase()}
                     </h3>
-                    <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+                    <div className='grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4'>
                       {movieDetail.production_companies.map(
                         (company: {
                           id: number;
@@ -286,15 +286,15 @@ function MovieDetail({
                         }) => (
                           <div
                             key={company.id}
-                            className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10 flex flex-col items-center text-center'>
+                            className='bg-white/5 backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/10 flex flex-col items-center text-center min-h-[100px] justify-center'>
                             {company.logo_path ? (
                               <img
                                 src={`https://image.tmdb.org/t/p/w200${company.logo_path}`}
                                 alt={company.name}
-                                className='h-12 object-contain mb-2'
+                                className='h-10 sm:h-12 object-contain mb-2'
                               />
                             ) : null}
-                            <p className='text-white text-sm font-semibold'>
+                            <p className='text-white text-xs sm:text-sm font-semibold break-words'>
                               {company.name}
                             </p>
                           </div>
@@ -309,7 +309,7 @@ function MovieDetail({
                     href={movieDetail.homepage}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='inline-block px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300'>
+                    className='inline-block px-4 py-2.5 sm:px-6 sm:py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold text-sm sm:text-base hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300'>
                     {t('movieDetail.visitWebsite')}
                   </a>
                 )}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -43,7 +44,6 @@ function MovieCard({
         className='group relative h-full flex flex-col rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-linear-to-br from-gray-900 to-black'
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}>
-        {/* Main Image */}
         <div className='relative aspect-2/3 bg-linear-to-br from-gray-900 to-black overflow-hidden'>
           <img
             src={posterUrl}
@@ -52,74 +52,28 @@ function MovieCard({
             loading='lazy'
           />
 
-          {/* Dark Gradient Overlay */}
-          <div className='absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent' />
+          <div className='absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-black/60' />
 
-          {/* Content Overlay */}
           <div className='absolute inset-0 flex flex-col justify-between p-4'>
-            {/* Top Section */}
             <div className='flex items-start justify-between'>
-              {/* Left Side: Rating and Year */}
-              <div className='flex items-start gap-3'>
-                {/* Circular Rating */}
-                <div className='relative w-14 h-14'>
-                  <svg className='w-14 h-14 transform -rotate-90'>
-                    <circle
-                      cx='28'
-                      cy='28'
-                      r='24'
-                      stroke='rgba(255,255,255,0.1)'
-                      strokeWidth='3'
-                      fill='none'
-                    />
-                    <circle
-                      cx='28'
-                      cy='28'
-                      r='24'
-                      stroke='url(#gradient)'
-                      strokeWidth='3'
-                      fill='none'
-                      strokeDasharray={`${2 * Math.PI * 24}`}
-                      strokeDashoffset={`${
-                        2 * Math.PI * 24 * (1 - ratingPercentage / 100)
-                      }`}
-                      strokeLinecap='round'
-                      className='transition-all duration-500'
-                    />
-                    <defs>
-                      <linearGradient
-                        id='gradient'
-                        x1='0%'
-                        y1='0%'
-                        x2='100%'
-                        y2='0%'>
-                        <stop
-                          offset='0%'
-                          style={{ stopColor: '#8B5CF6', stopOpacity: 1 }}
-                        />
-                        <stop
-                          offset='100%'
-                          style={{ stopColor: '#EC4899', stopOpacity: 1 }}
-                        />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <div className='absolute inset-0 flex items-center justify-center'>
-                    <span className='text-white font-bold text-sm'>
-                      {movie.vote_average.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Year Badge */}
-                <div className='px-3 py-1 bg-black/60 backdrop-blur-md rounded-full h-fit'>
-                  <span className='text-white text-xs font-semibold'>
-                    {releaseYear}
-                  </span>
-                </div>
+              <div className='relative w-10 h-10'>
+                <CircularProgressbar
+                  value={ratingPercentage}
+                  text={movie.vote_average.toFixed(1)}
+                  styles={buildStyles({
+                    textSize: '32px',
+                    textColor: '#FFFFFF',
+                    pathColor: '#00D9FF',
+                    trailColor: 'rgba(255, 255, 255, 0.1)',
+                  })}
+                />
+              </div>
+              <div className='px-3 py-1 bg-black/60 backdrop-blur-md rounded-full h-fit'>
+                <span className='text-white text-xs font-semibold'>
+                  {releaseYear}
+                </span>
               </div>
 
-              {/* Right Side: Favorite Button */}
               {onToggleFavorite && (
                 <button
                   onClick={handleFavoriteClick}
@@ -128,7 +82,9 @@ function MovieCard({
                     isLoadingFavorites ? 'animate-pulse cursor-wait' : ''
                   }`}
                   aria-label={
-                    isFavorite ? t('movies.card.removeFromFavorites') : t('movies.card.addToFavorites')
+                    isFavorite
+                      ? t('movies.card.removeFromFavorites')
+                      : t('movies.card.addToFavorites')
                   }>
                   {isLoadingFavorites ? (
                     <svg
@@ -167,14 +123,12 @@ function MovieCard({
               )}
             </div>
 
-            {/* Hover Info */}
             <div
               className={`transition-all duration-500 space-y-3 ${
                 isHovered
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-4'
               }`}>
-              {/* Stats */}
               <div className='flex items-center gap-4'>
                 <div className='flex items-center gap-1.5'>
                   <svg
@@ -193,12 +147,10 @@ function MovieCard({
                 </span>
               </div>
 
-              {/* Overview */}
               <p className='text-white/90 text-sm line-clamp-3 leading-relaxed'>
                 {movie.overview}
               </p>
 
-              {/* View Details Button */}
               <div className='w-full py-2.5 bg-white/90 hover:bg-white text-black font-bold rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105'>
                 <svg
                   className='w-5 h-5'
@@ -223,11 +175,9 @@ function MovieCard({
             </div>
           </div>
 
-          {/* Shine Effect */}
           <div className='absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none' />
         </div>
 
-        {/* Title Section - Outside Image */}
         <div className='p-4 bg-linear-to-br from-gray-900 to-black min-h-[60px] flex flex-col justify-center'>
           <h3 className='text-white font-bold text-lg leading-tight line-clamp-2'>
             {movie.title}

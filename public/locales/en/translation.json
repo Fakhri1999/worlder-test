@@ -1,0 +1,89 @@
+{
+  "common": {
+    "backToHome": "Back to Home",
+    "loading": "Loading...",
+    "error": "Error",
+    "oops": "Oops! Something went wrong",
+    "anErrorOccurred": "An error occurred"
+  },
+  "home": {
+    "title": "Welcome to Worlder",
+    "subtitle": "Discover amazing movies from around the world",
+    "exploreMovies": "Explore Movies"
+  },
+  "movies": {
+    "title": "Movies",
+    "subtitle": "Discover amazing movies from around the world",
+    "searchPlaceholder": "Search for movies...",
+    "searchResultsFor": "Search results for:",
+    "noMoviesFound": "No movies found",
+    "noMoviesMessage": "We couldn't find any movies matching",
+    "clearSearch": "Clear Search",
+    "categories": {
+      "popular": "Popular",
+      "nowPlaying": "Now Playing",
+      "topRated": "Top Rated",
+      "favorites": "Favorites"
+    },
+    "pagination": {
+      "page": "Page",
+      "of": "of",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "card": {
+      "addToFavorites": "Add to favorites",
+      "removeFromFavorites": "Remove from favorites",
+      "viewDetails": "View Details"
+    },
+    "pleaseLogin": "Please login first to favorite movies"
+  },
+  "movieDetail": {
+    "releaseDate": "Release Date",
+    "runtime": "Runtime",
+    "minutes": "minutes",
+    "rating": "Rating",
+    "overview": "Overview",
+    "genres": "Genres",
+    "backToMovies": "Back to Movies",
+    "budget": "Budget",
+    "revenue": "Revenue",
+    "originalLanguage": "Original Language",
+    "originalTitle": "Original Title",
+    "productionCompanies": "Production Companies",
+    "visitWebsite": "Visit Official Website",
+    "noImage": "No Image",
+    "votes": "votes",
+    "notAvailable": "N/A"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "namePlaceholder": "Enter your name",
+    "loginButton": "Sign In",
+    "loginButtonLoading": "Signing in...",
+    "registerButton": "Create Account",
+    "registerButtonLoading": "Creating account...",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "loginSubtitle": "Sign in to continue",
+    "registerSubtitle": "Create a new account",
+    "loginFailedMessage": "Login failed. Please try again.",
+    "registerFailedMessage": "Registration failed. Please try again.",
+    "passwordHint": "Password must be at least 6 characters",
+    "firebaseDemo": "Firebase Authentication Demo",
+    "registerLink": "Register",
+    "signInLink": "Sign in",
+    "logout": "Logout"
+  },
+  "errors": {
+    "fetchError": "Error {{status}}: {{message}}",
+    "decodeError": "Data Decode Error: {{message}}",
+    "unknownError": "An unknown error occurred."
+  }
+}

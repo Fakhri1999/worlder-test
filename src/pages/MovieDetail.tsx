@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { matchPI } from 'ts-adt';
 
@@ -7,6 +8,7 @@ import { PageProvider } from '@/providers/PageProvider';
 import { routesUrl } from '@/routes/routesConfig';
 
 function MovieDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [state, send] = useMovieDetailMachine();
 
@@ -53,7 +55,7 @@ function MovieDetail() {
                   d='M10 19l-7-7m0 0l7-7m-7 7h18'
                 />
               </svg>
-              Back to Movies
+              {t('movieDetail.backToMovies')}
             </button>
           </Link>
 
@@ -142,16 +144,18 @@ function MovieDetail() {
                 </svg>
               </div>
               <p className='text-white font-bold text-xl mb-2'>
-                Oops! Something went wrong
+                {t('common.oops')}
               </p>
               <p className='text-gray-300'>
                 {matchPI(error)(
                   {
-                    FETCH_ERROR: (err) => `Error ${err.status}: ${err.message}`,
-                    DECODE_ERROR: (err) => `Data Decode Error: ${err.message}`,
-                    UNKNOWN_ERROR: () => `An unknown error occurred.`,
+                    FETCH_ERROR: (err) =>
+                      t('errors.fetchError', { status: err.status, message: err.message }),
+                    DECODE_ERROR: (err) =>
+                      t('errors.decodeError', { message: err.message }),
+                    UNKNOWN_ERROR: () => t('errors.unknownError'),
                   },
-                  () => 'An error occurred',
+                  () => t('common.anErrorOccurred'),
                 )}
               </p>
             </div>
@@ -172,7 +176,7 @@ function MovieDetail() {
                     />
                   ) : (
                     <div className='w-full aspect-2/3 bg-gray-800 rounded-2xl flex items-center justify-center'>
-                      <span className='text-gray-500 text-xl'>No Image</span>
+                      <span className='text-gray-500 text-xl'>{t('movieDetail.noImage')}</span>
                     </div>
                   )}
                 </div>
@@ -205,7 +209,7 @@ function MovieDetail() {
                         {movie.vote_average.toFixed(1)}
                       </span>
                       <span className='text-gray-400 text-sm'>
-                        ({movie.vote_count} votes)
+                        ({movie.vote_count} {t('movieDetail.votes')})
                       </span>
                     </div>
 
@@ -240,7 +244,7 @@ function MovieDetail() {
                   {movie.genres.length > 0 && (
                     <div>
                       <h3 className='text-gray-400 text-sm font-semibold mb-2'>
-                        GENRES
+                        {t('movieDetail.genres').toUpperCase()}
                       </h3>
                       <div className='flex flex-wrap gap-2'>
                         {movie.genres.map((genre) => (
@@ -258,7 +262,7 @@ function MovieDetail() {
                   {movie.overview && (
                     <div>
                       <h3 className='text-gray-400 text-sm font-semibold mb-2'>
-                        OVERVIEW
+                        {t('movieDetail.overview').toUpperCase()}
                       </h3>
                       <p className='text-white text-lg leading-relaxed'>
                         {movie.overview}
@@ -272,7 +276,7 @@ function MovieDetail() {
                     {movie.budget > 0 && (
                       <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
                         <h4 className='text-gray-400 text-sm font-semibold mb-1'>
-                          Budget
+                          {t('movieDetail.budget')}
                         </h4>
                         <p className='text-white text-xl font-bold'>
                           ${movie.budget.toLocaleString()}
@@ -284,7 +288,7 @@ function MovieDetail() {
                     {movie.revenue > 0 && (
                       <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
                         <h4 className='text-gray-400 text-sm font-semibold mb-1'>
-                          Revenue
+                          {t('movieDetail.revenue')}
                         </h4>
                         <p className='text-white text-xl font-bold'>
                           ${movie.revenue.toLocaleString()}
@@ -295,7 +299,7 @@ function MovieDetail() {
                     {/* Original Language */}
                     <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
                       <h4 className='text-gray-400 text-sm font-semibold mb-1'>
-                        Original Language
+                        {t('movieDetail.originalLanguage')}
                       </h4>
                       <p className='text-white text-xl font-bold uppercase'>
                         {movie.original_language}
@@ -306,7 +310,7 @@ function MovieDetail() {
                     {movie.original_title !== movie.title && (
                       <div className='bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10'>
                         <h4 className='text-gray-400 text-sm font-semibold mb-1'>
-                          Original Title
+                          {t('movieDetail.originalTitle')}
                         </h4>
                         <p className='text-white text-xl font-bold'>
                           {movie.original_title}
@@ -319,7 +323,7 @@ function MovieDetail() {
                   {movie.production_companies.length > 0 && (
                     <div>
                       <h3 className='text-gray-400 text-sm font-semibold mb-3'>
-                        PRODUCTION COMPANIES
+                        {t('movieDetail.productionCompanies').toUpperCase()}
                       </h3>
                       <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
                         {movie.production_companies.map((company) => (
@@ -349,7 +353,7 @@ function MovieDetail() {
                       target='_blank'
                       rel='noopener noreferrer'
                       className='inline-block px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300'>
-                      Visit Official Website
+                      {t('movieDetail.visitWebsite')}
                     </a>
                   )}
                 </div>

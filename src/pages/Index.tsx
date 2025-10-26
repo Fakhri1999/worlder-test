@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { useAuthUser } from '@/modules/auth/authHooks';
@@ -9,6 +10,7 @@ import { LoginFormContainer } from '@/ui/auth/LoginFormContainer';
 import { RegisterFormContainer } from '@/ui/auth/RegisterFormContainer';
 
 function Index() {
+  const { t } = useTranslation();
   const { isAuthReady } = useAuthUser();
   const [state, send] = useAuthMachine();
 
@@ -53,66 +55,138 @@ function Index() {
 
   return (
     <PageProvider>
-      <div className='flex flex-col flex-1 w-full items-center justify-center px-4'>
-        {state.matches('Showing Register Form') && (
-          <RegisterFormContainer
-            onSubmit={handleRegisterSubmit}
-            isLoading={state.matches({
-              'Showing Register Form': 'Registering',
-            })}
-            error={error}
-            onClickLogin={handleShowLoginForm}
-          />
-        )}
+      <div className='flex flex-col flex-1 w-full min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden'>
+        {/* Animated Background Elements */}
+        <div
+          className='absolute inset-0 opacity-20'
+          style={{
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+          }}
+        />
 
-        {state.matches('Showing Login Form') && (
-          <LoginFormContainer
-            onSubmit={handleLoginSubmit}
-            isLoading={state.matches({
-              'Showing Login Form': 'Logging In',
-            })}
-            error={error}
-            onClickRegister={handleShowRegisterForm}
-          />
-        )}
+        <div className='relative flex flex-col flex-1 w-full items-center justify-center px-4 py-8'>
+          {/* Auth Forms */}
+          {state.matches('Showing Register Form') && (
+            <div className='w-full max-w-2xl animate-fadeIn'>
+              <RegisterFormContainer
+                onSubmit={handleRegisterSubmit}
+                isLoading={state.matches({
+                  'Showing Register Form': 'Registering',
+                })}
+                error={error}
+                onClickLogin={handleShowLoginForm}
+              />
+            </div>
+          )}
 
-        {state.matches('Authenticated') && (
-          <div className='w-full max-w-md'>
-            <div className='bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4 animate-fadeInUp'>
-              <h1 className='text-3xl font-bold text-center mb-4 bg-linear-to-r from-green-400 to-blue-400 bg-clip-text text-transparent'>
-                Welcome Back!
-              </h1>
-              <div className='bg-green-50 border border-green-200 rounded-lg p-4 mb-6'>
-                <p className='text-gray-700 mb-1'>
-                  <span className='font-semibold'>Name:</span> {user?.name}
-                </p>
-                <p className='text-gray-700 mb-1'>
-                  <span className='font-semibold'>Email:</span> {user?.email}
-                </p>
-                <p className='text-gray-700'>
-                  <span className='font-semibold'>ID:</span> {user?.id}
-                </p>
-              </div>
+          {state.matches('Showing Login Form') && (
+            <div className='w-full max-w-2xl animate-fadeIn'>
+              <LoginFormContainer
+                onSubmit={handleLoginSubmit}
+                isLoading={state.matches({
+                  'Showing Login Form': 'Logging In',
+                })}
+                error={error}
+                onClickRegister={handleShowRegisterForm}
+              />
+            </div>
+          )}
 
-              <div className='space-y-3'>
-                <Link to={routesUrl.movies} className='block'>
+          {/* Authenticated User Dashboard */}
+          {state.matches('Authenticated') && (
+            <div className='w-full max-w-2xl animate-fadeIn'>
+              {/* Welcome Card */}
+              <div className='bg-white/10 backdrop-blur-xl shadow-2xl rounded-3xl px-8 py-10 mb-6 border border-white/20'>
+                <div className='text-center mb-8'>
+                  <h1 className='text-5xl font-black mb-3 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-slideInDown'>
+                    {t('home.title')}
+                  </h1>
+                  <p className='text-purple-200 text-lg'>
+                    {t('home.subtitle')}
+                  </p>
+                </div>
+
+                {/* User Info Card */}
+                <div className='bg-linear-to-br from-green-500/20 to-blue-500/20 backdrop-blur-sm border border-green-400/30 rounded-2xl p-6 mb-6 shadow-lg'>
+                  <div className='flex items-center gap-4 mb-4'>
+                    <div className='w-16 h-16 bg-linear-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg'>
+                      {user?.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h2 className='text-white text-2xl font-bold'>
+                        {user?.name}
+                      </h2>
+                      <p className='text-green-200 text-sm'>{user?.email}</p>
+                    </div>
+                  </div>
+                  <div className='bg-white/5 backdrop-blur-sm rounded-xl p-3 border border-white/10'>
+                    <p className='text-gray-300 text-xs'>
+                      <span className='font-semibold text-purple-300'>
+                        User ID:
+                      </span>{' '}
+                      <span className='font-mono'>{user?.id}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className='space-y-4'>
+                  <Link to={routesUrl.movies} className='block'>
+                    <button
+                      type='button'
+                      className='group w-full cursor-pointer px-6 py-4 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 flex items-center justify-center gap-3'>
+                      <svg
+                        className='w-6 h-6 transform group-hover:scale-110 transition-transform'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z'
+                        />
+                      </svg>
+                      {t('home.exploreMovies')}
+                      <svg
+                        className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M13 7l5 5m0 0l-5 5m5-5H6'
+                        />
+                      </svg>
+                    </button>
+                  </Link>
+
                   <button
                     type='button'
-                    className='w-full cursor-pointer px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200'>
-                    Go to Movies
+                    onClick={handleLogout}
+                    className='group cursor-pointer w-full px-6 py-3 bg-white/10 backdrop-blur-sm hover:bg-red-500/20 text-white rounded-xl font-semibold border border-white/20 hover:border-red-400/50 transition-all duration-300 flex items-center justify-center gap-2'>
+                    <svg
+                      className='w-5 h-5 transform group-hover:scale-110 transition-transform'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'>
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'
+                      />
+                    </svg>
+                    {t('auth.logout')}
                   </button>
-                </Link>
-
-                <button
-                  type='button'
-                  onClick={handleLogout}
-                  className='cursor-pointer w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200'>
-                  Logout
-                </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </PageProvider>
   );

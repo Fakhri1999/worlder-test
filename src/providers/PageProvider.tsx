@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import { endLoading, startLoading } from '@/libs/nprogress';
 import { usePage } from '@/modules/page/usePage';
+import { LanguageSwitcher } from '@/ui/LanguageSwitcher';
 
 type Props = {
   children: ReactNode;
@@ -13,7 +14,11 @@ function PageProvider({ children }: Props) {
 
   const render = useMemo(() => {
     return (
-      <div className='flex flex-col min-h-screen bg-[#FCFCFC]'>
+      <div className='relative flex flex-col min-h-screen'>
+        {/* Language Switcher - Absolute positioned */}
+        <div className='absolute top-4 right-4 md:top-8 md:right-8 z-10 animate-slideInRight'>
+          <LanguageSwitcher />
+        </div>
         {children}
       </div>
     );

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { TMDB_BASE_IMAGE_URL } from '@/config/tmdb';
@@ -18,6 +19,7 @@ function MovieCard({
   isLoadingFavorites = false,
   onToggleFavorite,
 }: MovieCardProps) {
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
 
   const posterUrl = movie.poster_path
@@ -25,7 +27,7 @@ function MovieCard({
     : 'https://placehold.co/300x450/png?text=No+Image&font=roboto';
   const releaseYear = movie.release_date
     ? new Date(movie.release_date).getFullYear()
-    : 'N/A';
+    : t('movieDetail.notAvailable');
 
   const ratingPercentage = (movie.vote_average / 10) * 100;
 
@@ -126,7 +128,7 @@ function MovieCard({
                     isLoadingFavorites ? 'animate-pulse cursor-wait' : ''
                   }`}
                   aria-label={
-                    isFavorite ? 'Remove from favorites' : 'Add to favorites'
+                    isFavorite ? t('movies.card.removeFromFavorites') : t('movies.card.addToFavorites')
                   }>
                   {isLoadingFavorites ? (
                     <svg
@@ -216,7 +218,7 @@ function MovieCard({
                     d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
                   />
                 </svg>
-                View Details
+                {t('movies.card.viewDetails')}
               </div>
             </div>
           </div>

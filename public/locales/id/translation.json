@@ -1,0 +1,89 @@
+{
+  "common": {
+    "backToHome": "Kembali ke Beranda",
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "oops": "Ups! Terjadi kesalahan",
+    "anErrorOccurred": "Terjadi kesalahan"
+  },
+  "home": {
+    "title": "Selamat Datang di Worlder",
+    "subtitle": "Temukan film-film menakjubkan dari seluruh dunia",
+    "exploreMovies": "Jelajahi Film"
+  },
+  "movies": {
+    "title": "Film",
+    "subtitle": "Temukan film-film menakjubkan dari seluruh dunia",
+    "searchPlaceholder": "Cari film...",
+    "searchResultsFor": "Hasil pencarian untuk:",
+    "noMoviesFound": "Film tidak ditemukan",
+    "noMoviesMessage": "Kami tidak dapat menemukan film yang cocok dengan",
+    "clearSearch": "Hapus Pencarian",
+    "categories": {
+      "popular": "Populer",
+      "nowPlaying": "Sedang Tayang",
+      "topRated": "Peringkat Teratas",
+      "favorites": "Favorit"
+    },
+    "pagination": {
+      "page": "Halaman",
+      "of": "dari",
+      "previous": "Sebelumnya",
+      "next": "Selanjutnya"
+    },
+    "card": {
+      "addToFavorites": "Tambahkan ke favorit",
+      "removeFromFavorites": "Hapus dari favorit",
+      "viewDetails": "Lihat Detail"
+    },
+    "pleaseLogin": "Silakan login terlebih dahulu untuk menambahkan film favorit"
+  },
+  "movieDetail": {
+    "releaseDate": "Tanggal Rilis",
+    "runtime": "Durasi",
+    "minutes": "menit",
+    "rating": "Rating",
+    "overview": "Ringkasan",
+    "genres": "Genre",
+    "backToMovies": "Kembali ke Film",
+    "budget": "Anggaran",
+    "revenue": "Pendapatan",
+    "originalLanguage": "Bahasa Asli",
+    "originalTitle": "Judul Asli",
+    "productionCompanies": "Perusahaan Produksi",
+    "visitWebsite": "Kunjungi Website Resmi",
+    "noImage": "Tidak Ada Gambar",
+    "votes": "suara",
+    "notAvailable": "T/A"
+  },
+  "auth": {
+    "login": "Masuk",
+    "register": "Daftar",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "name": "Nama",
+    "emailPlaceholder": "Masukkan email Anda",
+    "passwordPlaceholder": "Masukkan kata sandi Anda",
+    "namePlaceholder": "Masukkan nama Anda",
+    "loginButton": "Masuk",
+    "loginButtonLoading": "Sedang masuk...",
+    "registerButton": "Buat Akun",
+    "registerButtonLoading": "Membuat akun...",
+    "noAccount": "Belum punya akun?",
+    "haveAccount": "Sudah punya akun?",
+    "loginSubtitle": "Masuk untuk melanjutkan",
+    "registerSubtitle": "Buat akun baru",
+    "loginFailedMessage": "Login gagal. Silakan coba lagi.",
+    "registerFailedMessage": "Pendaftaran gagal. Silakan coba lagi.",
+    "passwordHint": "Kata sandi minimal 6 karakter",
+    "firebaseDemo": "Demo Autentikasi Firebase",
+    "registerLink": "Daftar",
+    "signInLink": "Masuk",
+    "logout": "Keluar"
+  },
+  "errors": {
+    "fetchError": "Kesalahan {{status}}: {{message}}",
+    "decodeError": "Kesalahan Decode Data: {{message}}",
+    "unknownError": "Terjadi kesalahan yang tidak diketahui."
+  }
+}

@@ -7,7 +7,7 @@ const LANGUAGES = [
   { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
 ];
 
-function LanguageSwitcher() {
+function LanguageSwitcherContainer() {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -86,4 +86,4 @@ function LanguageSwitcher() {
   );
 }
 
-export { LanguageSwitcher };
+export { LanguageSwitcherContainer };

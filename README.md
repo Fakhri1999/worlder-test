@@ -45,7 +45,7 @@ TODO:
 - [x] Implement firebase login and registration
 - [x] Implement favourite movies list functionality and save to firebase
 - [ ] Write documentation in Markup language
-- [ ] Host the application on a free hosting platform
-- [ ] (Optional) Create unit tests for components
+- [x] Host the application on a free hosting platform
+- [x] (Optional) Create unit tests for components
 - [ ] (Optional) Implement dark and light modes
 - [ ] (Optional) Convert web app to desktop application with Electron.js

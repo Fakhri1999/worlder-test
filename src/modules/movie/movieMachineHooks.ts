@@ -5,7 +5,11 @@ import { firebaseAuth } from '@/libs/firebase';
 
 import { getFavorites } from './movieFavoritesServices';
 import { movieMachine } from './movieMachine';
-import { getMovies } from './movieServices';
+import {
+  getMovies,
+  getNowPlayingMovies,
+  getTopRatedMovies,
+} from './movieServices';
 
 export function useMovieMachine() {
   return useMachine(
@@ -13,6 +17,14 @@ export function useMovieMachine() {
       actors: {
         fetchMovies: fromPromise(async ({ input }) => {
           const result = await getMovies({ page: input.page });
+          return result;
+        }),
+        fetchNowPlaying: fromPromise(async ({ input }) => {
+          const result = await getNowPlayingMovies(input.page);
+          return result;
+        }),
+        fetchTopRated: fromPromise(async ({ input }) => {
+          const result = await getTopRatedMovies(input.page);
           return result;
         }),
         fetchFavorites: fromPromise(async () => {

@@ -43,7 +43,7 @@ TODO:
 - [x] Create movie detail page
 - [ ] Implement movie search functionality
 - [x] Implement firebase login and registration
-- [ ] Implement favourite movies list functionality and save to firebase
+- [x] Implement favourite movies list functionality and save to firebase
 - [ ] Write documentation in Markup language
 - [ ] Host the application on a free hosting platform
 - [ ] (Optional) Create unit tests for components

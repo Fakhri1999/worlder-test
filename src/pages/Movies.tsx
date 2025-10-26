@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { matchPI } from 'ts-adt';
 
 import { useAuthUser } from '@/modules/auth/authHooks';
@@ -11,14 +11,79 @@ import { PageProvider } from '@/providers/PageProvider';
 import { routesUrl } from '@/routes/routesConfig';
 import { MovieCard } from '@/ui/movie/MovieCard';
 
-type MovieCategory = 'popular' | 'now_playing' | 'top_rated';
+type MovieCategory = 'popular' | 'now_playing' | 'top_rated' | 'favorites';
+
+type CategoryConfig = {
+  value: MovieCategory;
+  label: string;
+  emoji: string;
+  gradient: string;
+  shadow: string;
+  requiresAuth?: boolean;
+};
+
+const CATEGORY_CONFIGS: CategoryConfig[] = [
+  {
+    value: 'popular',
+    label: 'Popular',
+    emoji: '🔥',
+    gradient: 'from-blue-500 to-purple-600',
+    shadow: 'shadow-blue-500/50',
+  },
+  {
+    value: 'now_playing',
+    label: 'Now Playing',
+    emoji: '🎬',
+    gradient: 'from-pink-500 to-rose-600',
+    shadow: 'shadow-pink-500/50',
+  },
+  {
+    value: 'top_rated',
+    label: 'Top Rated',
+    emoji: '⭐',
+    gradient: 'from-yellow-500 to-orange-600',
+    shadow: 'shadow-yellow-500/50',
+  },
+  {
+    value: 'favorites',
+    label: 'Favorites',
+    emoji: '❤️',
+    gradient: 'from-red-500 to-pink-600',
+    shadow: 'shadow-red-500/50',
+    requiresAuth: true,
+  },
+];
 
 function Index() {
-  const [category, setCategory] = useState<MovieCategory>('popular');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Get category from URL query params, default to 'popular'
+  const urlCategory = searchParams.get('category') as MovieCategory | null;
+  const validCategories: MovieCategory[] = [
+    'popular',
+    'now_playing',
+    'top_rated',
+    'favorites',
+  ];
+  const initialCategory: MovieCategory =
+    urlCategory && validCategories.includes(urlCategory)
+      ? urlCategory
+      : 'popular';
+
+  const [category, setCategory] = useState<MovieCategory>(initialCategory);
 
   const [movieState, movieSend] = useMovieMachine();
   const [favoritesState, favoritesSend] = useFavoritesMachine();
   const { user, isAuthReady } = useAuthUser();
+
+  // Track if initial fetch has been triggered
+  const initialFetchDone = useRef(false);
+
+  // Filter categories based on authentication
+  const visibleCategories = useMemo(
+    () => CATEGORY_CONFIGS.filter((config) => !config.requiresAuth || user?.uid),
+    [user?.uid],
+  );
 
   // Load favorites on mount
   useEffect(() => {
@@ -36,15 +101,37 @@ function Index() {
     favoritesSend({ type: 'LOAD_FAVORITES' });
   }, [favoritesSend, user?.uid, isAuthReady]);
 
+  // Fetch initial category from URL on mount (only once)
+  useEffect(() => {
+    if (initialFetchDone.current) return;
+
+    if (category === 'favorites') {
+      movieSend({ type: 'FETCH_FAVORITES' });
+    } else if (category === 'now_playing') {
+      movieSend({ type: 'FETCH_NOW_PLAYING', data: { page: 1 } });
+    } else if (category === 'top_rated') {
+      movieSend({ type: 'FETCH_TOP_RATED', data: { page: 1 } });
+    } else {
+      movieSend({ type: 'FETCH_MOVIES', data: { page: 1 } });
+    }
+
+    initialFetchDone.current = true;
+  }, [category, movieSend]);
+
   const handleCategoryChange = (newCategory: MovieCategory) => {
-    // TODO: implement fetch other categories
     setCategory(newCategory);
-    movieSend({
-      type: 'FETCH_MOVIES',
-      data: {
-        page: 1,
-      },
-    });
+    // Update URL query params
+    setSearchParams({ category: newCategory });
+
+    if (newCategory === 'favorites') {
+      movieSend({ type: 'FETCH_FAVORITES' });
+    } else if (newCategory === 'now_playing') {
+      movieSend({ type: 'FETCH_NOW_PLAYING', data: { page: 1 } });
+    } else if (newCategory === 'top_rated') {
+      movieSend({ type: 'FETCH_TOP_RATED', data: { page: 1 } });
+    } else {
+      movieSend({ type: 'FETCH_MOVIES', data: { page: 1 } });
+    }
   };
 
   const handleToggleFavorite = (movie: Movie) => {
@@ -65,6 +152,16 @@ function Index() {
         type: 'ADD_FAVORITE',
         data: { movie },
       });
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    if (category === 'now_playing') {
+      movieSend({ type: 'FETCH_NOW_PLAYING', data: { page } });
+    } else if (category === 'top_rated') {
+      movieSend({ type: 'FETCH_TOP_RATED', data: { page } });
+    } else {
+      movieSend({ type: 'FETCH_MOVIES', data: { page } });
     }
   };
 
@@ -126,39 +223,22 @@ function Index() {
 
             {/* Category Tabs */}
             <div className='flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide'>
-              <button
-                type='button'
-                onClick={() => handleCategoryChange('popular')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  category === 'popular'
-                    ? 'bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50'
-                    : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
-                }`}>
-                🔥 Popular
-              </button>
-              <button
-                type='button'
-                onClick={() => handleCategoryChange('now_playing')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  category === 'now_playing'
-                    ? 'bg-linear-to-r from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/50'
-                    : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
-                }`}>
-                🎬 Now Playing
-              </button>
-              <button
-                type='button'
-                onClick={() => handleCategoryChange('top_rated')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
-                  category === 'top_rated'
-                    ? 'bg-linear-to-r from-yellow-500 to-orange-600 text-white shadow-lg shadow-yellow-500/50'
-                    : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
-                }`}>
-                ⭐ Top Rated
-              </button>
+              {visibleCategories.map((config) => (
+                <button
+                  key={config.value}
+                  type='button'
+                  onClick={() => handleCategoryChange(config.value)}
+                  className={`cursor-pointer px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    category === config.value
+                      ? `bg-linear-to-r ${config.gradient} text-white shadow-lg ${config.shadow}`
+                      : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
+                  }`}>
+                  {config.emoji} {config.label}
+                </button>
+              ))}
             </div>
 
-            {movieState.matches('Fetching Movies') && (
+            {movieState.hasTag('loading') && (
               <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6'>
                 {Array.from({ length: 20 }).map((_, index) => (
                   <div
@@ -248,79 +328,75 @@ function Index() {
                   )}
                 </div>
 
-                {/* Pagination */}
-                <div className='flex justify-center items-center gap-4 mt-12 mb-8'>
-                  <button
-                    type='button'
-                    onClick={() =>
-                      movieSend({
-                        type: 'FETCH_MOVIES',
-                        data: {
-                          page: Math.max(1, movieState.context.currentPage - 1),
-                        },
-                      })
-                    }
-                    disabled={movieState.context.currentPage === 1}
-                    className={clsx(
-                      'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
-                      movieState.context.currentPage === 1 &&
-                        'cursor-not-allowed',
-                    )}>
-                    <svg
-                      className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M15 19l-7-7 7-7'
-                      />
-                    </svg>
-                    Previous
-                  </button>
-                  <div className='px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
-                    <span className='text-sm opacity-75'>Page</span>{' '}
-                    <span className='text-xl'>
-                      {movieState.context.currentPage}
-                    </span>{' '}
-                    <span className='text-sm opacity-75'>
-                      of {movieState.context.totalPage}
-                    </span>
+                {/* Pagination - Only show for TMDB results, not favorites */}
+                {movieState.context.mode === 'tmdb' && (
+                  <div className='flex justify-center items-center gap-4 mt-12 mb-8'>
+                    <button
+                      type='button'
+                      onClick={() =>
+                        handlePageChange(
+                          Math.max(1, movieState.context.currentPage - 1),
+                        )
+                      }
+                      disabled={movieState.context.currentPage === 1}
+                      className={clsx(
+                        'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
+                        movieState.context.currentPage === 1 &&
+                          'cursor-not-allowed',
+                      )}>
+                      <svg
+                        className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M15 19l-7-7 7-7'
+                        />
+                      </svg>
+                      Previous
+                    </button>
+                    <div className='px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
+                      <span className='text-sm opacity-75'>Page</span>{' '}
+                      <span className='text-xl'>
+                        {movieState.context.currentPage}
+                      </span>{' '}
+                      <span className='text-sm opacity-75'>
+                        of {movieState.context.totalPage}
+                      </span>
+                    </div>
+                    <button
+                      type='button'
+                      onClick={() =>
+                        handlePageChange(movieState.context.currentPage + 1)
+                      }
+                      disabled={
+                        movieState.context.currentPage >=
+                        movieState.context.totalPage
+                      }
+                      className={clsx(
+                        'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
+                        movieState.context.currentPage >=
+                          movieState.context.totalPage && 'cursor-not-allowed',
+                      )}>
+                      Next
+                      <svg
+                        className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'>
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M9 5l7 7-7 7'
+                        />
+                      </svg>
+                    </button>
                   </div>
-                  <button
-                    type='button'
-                    onClick={() =>
-                      movieSend({
-                        type: 'FETCH_MOVIES',
-                        data: { page: movieState.context.currentPage + 1 },
-                      })
-                    }
-                    disabled={
-                      movieState.context.currentPage >=
-                      movieState.context.totalPage
-                    }
-                    className={clsx(
-                      'group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 disabled:hover:bg-white/10 cursor-pointer',
-                      movieState.context.currentPage >=
-                        movieState.context.totalPage && 'cursor-not-allowed',
-                    )}>
-                    Next
-                    <svg
-                      className='w-5 h-5 transform group-hover:translate-x-1 transition-transform'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'>
-                      <path
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                        strokeWidth={2}
-                        d='M9 5l7 7-7 7'
-                      />
-                    </svg>
-                  </button>
-                </div>
+                )}
               </>
             )}
           </div>

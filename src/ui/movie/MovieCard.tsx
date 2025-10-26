@@ -57,12 +57,72 @@ function MovieCard({
           <div className='absolute inset-0 flex flex-col justify-between p-4'>
             {/* Top Section */}
             <div className='flex items-start justify-between'>
-              {/* Favorite Button */}
+              {/* Left Side: Rating and Year */}
+              <div className='flex items-start gap-3'>
+                {/* Circular Rating */}
+                <div className='relative w-14 h-14'>
+                  <svg className='w-14 h-14 transform -rotate-90'>
+                    <circle
+                      cx='28'
+                      cy='28'
+                      r='24'
+                      stroke='rgba(255,255,255,0.1)'
+                      strokeWidth='3'
+                      fill='none'
+                    />
+                    <circle
+                      cx='28'
+                      cy='28'
+                      r='24'
+                      stroke='url(#gradient)'
+                      strokeWidth='3'
+                      fill='none'
+                      strokeDasharray={`${2 * Math.PI * 24}`}
+                      strokeDashoffset={`${
+                        2 * Math.PI * 24 * (1 - ratingPercentage / 100)
+                      }`}
+                      strokeLinecap='round'
+                      className='transition-all duration-500'
+                    />
+                    <defs>
+                      <linearGradient
+                        id='gradient'
+                        x1='0%'
+                        y1='0%'
+                        x2='100%'
+                        y2='0%'>
+                        <stop
+                          offset='0%'
+                          style={{ stopColor: '#8B5CF6', stopOpacity: 1 }}
+                        />
+                        <stop
+                          offset='100%'
+                          style={{ stopColor: '#EC4899', stopOpacity: 1 }}
+                        />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className='absolute inset-0 flex items-center justify-center'>
+                    <span className='text-white font-bold text-sm'>
+                      {movie.vote_average.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Year Badge */}
+                <div className='px-3 py-1 bg-black/60 backdrop-blur-md rounded-full h-fit'>
+                  <span className='text-white text-xs font-semibold'>
+                    {releaseYear}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Side: Favorite Button */}
               {onToggleFavorite && (
                 <button
                   onClick={handleFavoriteClick}
                   disabled={isLoadingFavorites}
-                  className={`cursor-pointer absolute top-2 right-2 z-10 p-2 bg-black/60 backdrop-blur-md rounded-full hover:bg-black/80 transition-all duration-300 transform hover:scale-110 ${
+                  className={`cursor-pointer p-2 bg-black/60 backdrop-blur-md rounded-full hover:bg-black/80 transition-all duration-300 transform hover:scale-110 ${
                     isLoadingFavorites ? 'animate-pulse cursor-wait' : ''
                   }`}
                   aria-label={
@@ -103,63 +163,6 @@ function MovieCard({
                   )}
                 </button>
               )}
-
-              {/* Circular Rating */}
-              <div className='relative w-14 h-14'>
-                <svg className='w-14 h-14 transform -rotate-90'>
-                  <circle
-                    cx='28'
-                    cy='28'
-                    r='24'
-                    stroke='rgba(255,255,255,0.1)'
-                    strokeWidth='3'
-                    fill='none'
-                  />
-                  <circle
-                    cx='28'
-                    cy='28'
-                    r='24'
-                    stroke='url(#gradient)'
-                    strokeWidth='3'
-                    fill='none'
-                    strokeDasharray={`${2 * Math.PI * 24}`}
-                    strokeDashoffset={`${
-                      2 * Math.PI * 24 * (1 - ratingPercentage / 100)
-                    }`}
-                    strokeLinecap='round'
-                    className='transition-all duration-500'
-                  />
-                  <defs>
-                    <linearGradient
-                      id='gradient'
-                      x1='0%'
-                      y1='0%'
-                      x2='100%'
-                      y2='0%'>
-                      <stop
-                        offset='0%'
-                        style={{ stopColor: '#8B5CF6', stopOpacity: 1 }}
-                      />
-                      <stop
-                        offset='100%'
-                        style={{ stopColor: '#EC4899', stopOpacity: 1 }}
-                      />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className='absolute inset-0 flex items-center justify-center'>
-                  <span className='text-white font-bold text-sm'>
-                    {movie.vote_average.toFixed(1)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Year Badge */}
-              <div className='px-3 py-1 bg-black/60 backdrop-blur-md rounded-full'>
-                <span className='text-white text-xs font-semibold'>
-                  {releaseYear}
-                </span>
-              </div>
             </div>
 
             {/* Hover Info */}

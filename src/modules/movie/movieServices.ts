@@ -37,6 +37,38 @@ export async function getMovies(
   );
 }
 
+export async function getNowPlayingMovies(
+  page: number = 1,
+): Promise<GetMoviesResponse> {
+  return fetcher(
+    {
+      url: `${TMDB_BASE_URL}/movie/now_playing`,
+      params: { page },
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+      },
+    },
+    GetMoviesResponseSchema,
+  );
+}
+
+export async function getTopRatedMovies(
+  page: number = 1,
+): Promise<GetMoviesResponse> {
+  return fetcher(
+    {
+      url: `${TMDB_BASE_URL}/movie/top_rated`,
+      params: { page },
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+      },
+    },
+    GetMoviesResponseSchema,
+  );
+}
+
 export async function getMovieDetail(movieId: number): Promise<MovieDetail> {
   return fetcher(
     {

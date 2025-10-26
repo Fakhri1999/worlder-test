@@ -59,10 +59,10 @@ function Index() {
 
   return (
     <PageProvider>
-      <div className='flex flex-col flex-1 w-full min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden'>
+      <div className='flex flex-col flex-1 w-full min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden'>
         {/* Animated Background Elements */}
         <div
-          className='absolute inset-0 opacity-20'
+          className='absolute inset-0 opacity-10 dark:opacity-20'
           style={{
             backgroundImage:
               "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
@@ -72,7 +72,7 @@ function Index() {
         <div className='relative flex flex-col flex-1 w-full items-center justify-center px-4 py-8'>
           {/* Auth Forms */}
           {state.matches('Showing Register Form') && (
-            <div className='w-full max-w-2xl animate-fadeIn'>
+            <div className='w-full max-w-xl animate-fadeIn'>
               <RegisterFormContainer
                 onSubmit={handleRegisterSubmit}
                 isLoading={state.matches({
@@ -85,7 +85,7 @@ function Index() {
           )}
 
           {state.matches('Showing Login Form') && (
-            <div className='w-full max-w-2xl animate-fadeIn'>
+            <div className='w-full max-w-xl animate-fadeIn'>
               <LoginFormContainer
                 onSubmit={handleLoginSubmit}
                 onGoogleSignIn={handleGoogleSignIn}
@@ -98,36 +98,36 @@ function Index() {
 
           {/* Authenticated User Dashboard */}
           {state.matches('Authenticated') && (
-            <div className='w-full max-w-2xl animate-fadeIn'>
+            <div className='w-full max-w-xl animate-fadeIn'>
               {/* Welcome Card */}
-              <div className='bg-white/10 backdrop-blur-xl shadow-2xl rounded-3xl px-4 py-6 sm:px-8 sm:py-10 mb-6 border border-white/20'>
+              <div className='bg-app-card/80 backdrop-blur-xl shadow-2xl rounded-3xl px-4 py-6 sm:px-8 sm:py-10 mb-6 border border-app-border'>
                 <div className='text-center mb-6 sm:mb-8'>
-                  <h1 className='text-3xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-slideInDown'>
+                  <h1 className='text-3xl sm:text-4xl md:text-5xl font-black mb-2 sm:mb-3 bg-gradient-to-r from-app-accent via-app-accent-purple to-app-accent-pink bg-clip-text text-transparent animate-slideInDown'>
                     {t('home.title')}
                   </h1>
-                  <p className='text-purple-200 text-base sm:text-lg'>
+                  <p className='text-app-secondary text-base sm:text-lg'>
                     {t('home.subtitle')}
                   </p>
                 </div>
 
                 {/* User Info Card */}
-                <div className='bg-linear-to-br from-green-500/20 to-blue-500/20 backdrop-blur-sm border border-green-400/30 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg'>
+                <div className='bg-gradient-to-br from-green-500/20 to-blue-500/20 backdrop-blur-sm border border-green-400/30 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6 shadow-lg'>
                   <div className='flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4'>
-                    <div className='w-12 h-12 sm:w-16 sm:h-16 bg-linear-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg flex-shrink-0'>
+                    <div className='w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xl sm:text-2xl font-bold shadow-lg flex-shrink-0'>
                       {user?.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className='min-w-0 flex-1'>
-                      <h2 className='text-white text-lg sm:text-xl md:text-2xl font-bold truncate'>
+                      <h2 className='text-app-primary text-lg sm:text-xl md:text-2xl font-bold truncate'>
                         {user?.name}
                       </h2>
-                      <p className='text-green-200 text-xs sm:text-sm truncate'>
+                      <p className='text-green-600 dark:text-green-200 text-xs sm:text-sm truncate'>
                         {user?.email}
                       </p>
                     </div>
                   </div>
-                  <div className='bg-white/5 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-white/10'>
-                    <p className='text-gray-300 text-xs break-all'>
-                      <span className='font-semibold text-purple-300'>
+                  <div className='bg-app-tertiary/30 backdrop-blur-sm rounded-xl p-2 sm:p-3 border border-app-border'>
+                    <p className='text-app-muted text-xs break-all'>
+                      <span className='font-semibold text-app-accent-purple'>
                         User ID:
                       </span>{' '}
                       <span className='font-mono'>{user?.id}</span>
@@ -140,7 +140,7 @@ function Index() {
                   <Link to={routesUrl.movies} className='block'>
                     <button
                       type='button'
-                      className='group w-full cursor-pointer px-4 py-3 sm:px-6 sm:py-4 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/50 flex items-center justify-center gap-2 sm:gap-3'>
+                      className='group w-full cursor-pointer px-4 py-3 sm:px-6 sm:py-4 bg-gradient-to-r from-app-accent to-app-accent-purple hover:from-blue-600 hover:to-purple-700 text-white rounded-xl font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-app-accent-purple/50 flex items-center justify-center gap-2 sm:gap-3'>
                       <svg
                         className='w-5 h-5 sm:w-6 sm:h-6 transform group-hover:scale-110 transition-transform flex-shrink-0'
                         fill='none'
@@ -174,7 +174,7 @@ function Index() {
                   <button
                     type='button'
                     onClick={handleLogout}
-                    className='group cursor-pointer w-full px-4 py-2.5 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-sm hover:bg-red-500/20 text-white rounded-xl font-semibold text-sm sm:text-base border border-white/20 hover:border-red-400/50 transition-all duration-300 flex items-center justify-center gap-2'>
+                    className='group cursor-pointer w-full px-4 py-2.5 sm:px-6 sm:py-3 bg-app-tertiary/50 backdrop-blur-sm hover:bg-red-500/20 text-app-primary rounded-xl font-semibold text-sm sm:text-base border border-app-border hover:border-red-400/50 transition-all duration-300 flex items-center justify-center gap-2'>
                     <svg
                       className='w-4 h-4 sm:w-5 sm:h-5 transform group-hover:scale-110 transition-transform flex-shrink-0'
                       fill='none'

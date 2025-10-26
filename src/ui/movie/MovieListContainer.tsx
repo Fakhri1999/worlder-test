@@ -267,7 +267,7 @@ function MovieListContainer() {
         <Link to={routesUrl.index}>
           <button
             type='button'
-            className='cursor-pointer group px-6 py-2 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl animate-slideInRight'>
+            className='cursor-pointer group px-6 py-2 bg-app-card/50 backdrop-blur-sm text-app-primary rounded-xl hover:bg-app-card/60 transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl animate-slideInRight'>
             <svg
               className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
               fill='none'

@@ -24,7 +24,7 @@ function LanguageSwitcherContainer() {
     <div className='relative'>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='cursor-pointer group px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl'>
+        className='cursor-pointer group px-4 py-2 bg-app-card/50 backdrop-blur-sm text-app-primary rounded-xl hover:bg-app-card/60 transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl'>
         <LanguageIcon className='w-5 h-5' />
         <span className='font-semibold'>{currentLanguage.flag}</span>
         <span className='hidden sm:inline'>{currentLanguage.name}</span>
@@ -53,21 +53,21 @@ function LanguageSwitcherContainer() {
           />
 
           {/* Dropdown */}
-          <div className='absolute right-0 mt-2 w-48 bg-gray-900/95 backdrop-blur-md border border-white/20 rounded-xl shadow-2xl overflow-hidden z-20'>
+          <div className='absolute right-0 mt-2 w-48 bg-app-card/95 dark:bg-slate-900/95 backdrop-blur-md border border-app-border rounded-xl shadow-2xl overflow-hidden z-20'>
             {LANGUAGES.map((language) => (
               <button
                 key={language.code}
                 onClick={() => handleLanguageChange(language.code)}
                 className={`w-full px-4 py-3 text-left flex items-center gap-3 transition-all duration-200 ${
                   i18n.language === language.code
-                    ? 'bg-purple-600/30 text-white'
-                    : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                    ? 'bg-app-accent-purple/30 text-app-primary'
+                    : 'text-app-secondary hover:bg-app-tertiary/50 hover:text-app-primary'
                 }`}>
                 <span className='text-2xl'>{language.flag}</span>
                 <span className='font-medium'>{language.name}</span>
                 {i18n.language === language.code && (
                   <svg
-                    className='w-5 h-5 ml-auto text-purple-400'
+                    className='w-5 h-5 ml-auto text-app-accent-purple'
                     fill='currentColor'
                     viewBox='0 0 20 20'>
                     <path

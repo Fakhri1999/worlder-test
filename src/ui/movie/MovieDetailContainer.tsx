@@ -33,7 +33,7 @@ function MovieDetailContainer() {
         <Link to={routesUrl.movies} className='inline-block mb-8'>
           <button
             type='button'
-            className='group px-6 py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl'>
+            className='group px-6 py-3 bg-app-card/50 backdrop-blur-sm text-app-primary rounded-xl hover:bg-app-card/60 transition-all duration-300 border border-app-card/20 hover:border-white/40 flex items-center gap-2 shadow-lg hover:shadow-xl'>
             <svg
               className='w-5 h-5 transform group-hover:-translate-x-1 transition-transform'
               fill='none'

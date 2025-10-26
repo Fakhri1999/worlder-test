@@ -66,27 +66,27 @@ function MovieList({
   const { t } = useTranslation();
 
   return (
-    <div className='flex flex-col flex-1 w-full min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden'>
+    <div className='flex flex-col flex-1 w-full min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden'>
       <div
-        className='absolute inset-0 opacity-20'
+        className='absolute inset-0 opacity-10 dark:opacity-20'
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
         }}
       />
 
-      <div className='absolute top-20 left-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob' />
-      <div className='absolute top-40 right-10 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000' />
-      <div className='absolute -bottom-8 left-1/2 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000' />
+      <div className='absolute top-20 left-10 w-72 h-72 bg-app-accent-purple rounded-full mix-blend-multiply filter blur-3xl opacity-10 dark:opacity-20 animate-blob' />
+      <div className='absolute top-40 right-10 w-72 h-72 bg-app-accent-pink rounded-full mix-blend-multiply filter blur-3xl opacity-10 dark:opacity-20 animate-blob animation-delay-2000' />
+      <div className='absolute -bottom-8 left-1/2 w-72 h-72 bg-app-accent rounded-full mix-blend-multiply filter blur-3xl opacity-10 dark:opacity-20 animate-blob animation-delay-4000' />
 
       <div className='relative container mx-auto px-4 py-6 sm:py-8 md:py-12'>
         <div className='flex flex-col mb-8 sm:mb-10 md:mb-12 animate-fadeIn'>
           <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-6 sm:mb-8'>
             <div className='mb-4 sm:mb-6 md:mb-0'>
-              <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 sm:mb-4 tracking-tight animate-slideInLeft'>
+              <h1 className='text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black bg-linear-to-r from-app-accent via-app-accent-purple to-app-accent-pink bg-clip-text text-transparent mb-3 sm:mb-4 tracking-tight animate-slideInLeft'>
                 {t('movies.title')}
               </h1>
-              <p className='text-gray-300 text-sm sm:text-base md:text-lg flex items-center gap-2 animate-slideInLeft animation-delay-100'>
+              <p className='text-app-secondary text-sm sm:text-base md:text-lg flex items-center gap-2 animate-slideInLeft animation-delay-100'>
                 <svg
                   className='w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 animate-pulse flex-shrink-0'
                   fill='currentColor'
@@ -116,7 +116,7 @@ function MovieList({
                   }
                 }}
                 placeholder={t('movies.searchPlaceholder')}
-                className='w-full pl-10 pr-10 py-3 sm:pl-12 sm:pr-12 sm:py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-sm sm:text-base text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300'
+                className='w-full pl-10 pr-10 py-3 sm:pl-12 sm:pr-12 sm:py-4 bg-app-card/50 dark:bg-white/10 backdrop-blur-md border border-app-border rounded-xl text-sm sm:text-base text-app-primary placeholder-app-muted focus:outline-none focus:ring-2 focus:ring-app-accent-purple focus:border-transparent transition-all duration-300'
               />
               {searchInput && (
                 <button
@@ -127,9 +127,9 @@ function MovieList({
               )}
             </div>
             {searchQuery && (
-              <p className='text-center text-gray-300 text-sm sm:text-base mt-3'>
+              <p className='text-center text-app-secondary text-sm sm:text-base mt-3'>
                 {t('movies.searchResultsFor')}{' '}
-                <span className='text-white font-semibold'>
+                <span className='text-app-primary font-semibold'>
                   &quot;{searchQuery}&quot;
                 </span>
               </p>
@@ -143,7 +143,7 @@ function MovieList({
                   {Array.from({ length: 3 }).map((_, index) => (
                     <div
                       key={index}
-                      className='px-4 py-2 sm:px-6 sm:py-3 rounded-xl bg-white/10 backdrop-blur-sm animate-pulse min-w-[120px] sm:min-w-[132px] h-[40px] sm:h-[48px] flex-shrink-0'
+                      className='px-4 py-2 sm:px-6 sm:py-3 rounded-xl bg-app-tertiary/50 backdrop-blur-sm animate-pulse min-w-[120px] sm:min-w-[132px] h-[40px] sm:h-[48px] flex-shrink-0'
                     />
                   ))}
                 </>
@@ -156,7 +156,7 @@ function MovieList({
                     className={`cursor-pointer px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-semibold transition-all duration-300 transform hover:scale-105 whitespace-nowrap flex-shrink-0 ${
                       selectedCategory === category.value
                         ? `bg-linear-to-r ${category.gradient} text-white shadow-lg ${category.shadow}`
-                        : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 hover:bg-white/20'
+                        : 'bg-app-tertiary/50 backdrop-blur-sm text-app-primary border border-app-border hover:bg-app-tertiary'
                     }`}>
                     {category.label}
                   </button>
@@ -170,19 +170,19 @@ function MovieList({
               {Array.from({ length: 20 }).map((_, index) => (
                 <div
                   key={index}
-                  className='h-full flex flex-col rounded-2xl overflow-hidden shadow-lg bg-linear-to-br from-gray-900 to-black animate-pulse'>
-                  <div className='relative aspect-2/3 bg-gray-800'>
+                  className='h-full flex flex-col rounded-2xl overflow-hidden shadow-lg bg-linear-to-br from-app-card to-app-surface animate-pulse'>
+                  <div className='relative aspect-2/3 bg-app-tertiary'>
                     <div className='absolute inset-0 flex flex-col justify-between p-4'>
                       <div className='flex items-start justify-between'>
-                        <div className='w-14 h-14 rounded-full bg-gray-700/50' />
-                        <div className='w-16 h-6 bg-gray-700/50 rounded-full' />
+                        <div className='w-14 h-14 rounded-full bg-app-bg/50' />
+                        <div className='w-16 h-6 bg-app-bg/50 rounded-full' />
                       </div>
                     </div>
                   </div>
 
-                  <div className='p-4 bg-linear-to-br from-gray-900 to-black min-h-[88px] flex flex-col justify-center space-y-2'>
-                    <div className='h-5 bg-gray-700/50 rounded w-4/5' />
-                    <div className='h-4 bg-gray-700/50 rounded w-3/5' />
+                  <div className='p-4 bg-linear-to-br from-app-card to-app-surface min-h-[88px] flex flex-col justify-center space-y-2'>
+                    <div className='h-5 bg-app-bg/50 rounded w-4/5' />
+                    <div className='h-4 bg-app-bg/50 rounded w-3/5' />
                   </div>
                 </div>
               ))}
@@ -205,10 +205,10 @@ function MovieList({
                   />
                 </svg>
               </div>
-              <p className='text-white font-bold text-xl mb-2'>
+              <p className='text-app-primary font-bold text-xl mb-2'>
                 {t('common.oops')}
               </p>
-              <p className='text-gray-300'>
+              <p className='text-app-secondary'>
                 {matchPI(error)(
                   {
                     FETCH_ERROR: (err) =>
@@ -231,16 +231,16 @@ function MovieList({
               <div className='w-20 h-20 bg-gray-700/20 rounded-full flex items-center justify-center mx-auto mb-6'>
                 <SearchIcon className='w-10 h-10 text-gray-400' />
               </div>
-              <p className='text-white font-bold text-2xl mb-3'>
+              <p className='text-app-primary font-bold text-2xl mb-3'>
                 {t('movies.noMoviesFound')}
               </p>
-              <p className='text-gray-300 mb-6'>
+              <p className='text-app-secondary mb-6'>
                 {t('movies.noMoviesMessage')} &quot;
                 {searchQuery}&quot;
               </p>
               <button
                 onClick={onClearSearch}
-                className='px-6 py-3 bg-linear-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold'>
+                className='px-6 py-3 bg-linear-to-r from-app-accent-purple to-app-accent-pink text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 font-semibold'>
                 {t('movies.clearSearch')}
               </button>
             </div>
@@ -271,7 +271,7 @@ function MovieList({
                     onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                     disabled={currentPage === 1}
                     className={clsx(
-                      'group px-3 py-2 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-1 sm:gap-2 disabled:hover:bg-white/10 cursor-pointer text-sm sm:text-base',
+                      'group px-3 py-2 sm:px-6 sm:py-3 bg-app-card/50 backdrop-blur-sm text-app-primary rounded-xl hover:bg-app-tertiary disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-app-border hover:border-app-border-alt flex items-center gap-1 sm:gap-2 disabled:hover:bg-app-card/50 cursor-pointer text-sm sm:text-base',
                       currentPage === 1 && 'cursor-not-allowed',
                     )}>
                     <svg
@@ -290,7 +290,7 @@ function MovieList({
                       {t('movies.pagination.previous')}
                     </span>
                   </button>
-                  <div className='px-3 py-2 sm:px-6 sm:py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold shadow-lg'>
+                  <div className='px-3 py-2 sm:px-6 sm:py-3 bg-linear-to-r from-app-accent to-app-accent-purple text-white rounded-xl font-bold shadow-lg'>
                     <span className='text-xs sm:text-sm opacity-75'>
                       {t('movies.pagination.page')}
                     </span>{' '}
@@ -304,7 +304,7 @@ function MovieList({
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage >= totalPage}
                     className={clsx(
-                      'group px-3 py-2 sm:px-6 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center gap-1 sm:gap-2 disabled:hover:bg-white/10 cursor-pointer text-sm sm:text-base',
+                      'group px-3 py-2 sm:px-6 sm:py-3 bg-app-card/50 backdrop-blur-sm text-app-primary rounded-xl hover:bg-app-tertiary disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 border border-app-border hover:border-app-border-alt flex items-center gap-1 sm:gap-2 disabled:hover:bg-app-card/50 cursor-pointer text-sm sm:text-base',
                       currentPage >= totalPage && 'cursor-not-allowed',
                     )}>
                     <span className='hidden sm:inline'>

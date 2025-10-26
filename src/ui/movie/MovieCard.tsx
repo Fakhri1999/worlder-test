@@ -41,10 +41,10 @@ function MovieCard({
   return (
     <Link to={routesUrl.movieDetail(movie.id)}>
       <div
-        className='group relative h-full flex flex-col rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-linear-to-br from-gray-900 to-black'
+        className='group relative h-full flex flex-col rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-500 bg-gradient-to-br from-app-card to-app-surface'
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}>
-        <div className='relative aspect-2/3 bg-linear-to-br from-gray-900 to-black overflow-hidden'>
+        <div className='relative aspect-2/3 bg-gradient-to-br from-app-card to-app-surface overflow-hidden'>
           <img
             src={posterUrl}
             alt={movie.title}
@@ -175,15 +175,15 @@ function MovieCard({
             </div>
           </div>
 
-          <div className='absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none' />
+          <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none' />
         </div>
 
-        <div className='p-4 bg-linear-to-br from-gray-900 to-black min-h-[60px] flex flex-col justify-center'>
-          <h3 className='text-white font-bold text-lg leading-tight line-clamp-2'>
+        <div className='p-4 bg-gradient-to-br from-app-card to-app-surface min-h-[60px] flex flex-col justify-center'>
+          <h3 className='text-app-primary font-bold text-lg leading-tight line-clamp-2'>
             {movie.title}
           </h3>
           {movie.original_title !== movie.title && (
-            <p className='text-gray-400 text-xs mt-1 line-clamp-1 italic'>
+            <p className='text-app-muted text-xs mt-1 line-clamp-1 italic'>
               {movie.original_title}
             </p>
           )}

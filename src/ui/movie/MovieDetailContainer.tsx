@@ -1,7 +1,9 @@
+import { logEvent } from 'firebase/analytics';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 
+import { firebaseAnalytics } from '@/libs/firebase';
 import { useMovieDetailMachine } from '@/modules/movie/movieDetailMachineHooks';
 import { routesUrl } from '@/routes/routesConfig';
 import { MovieDetail } from '@/ui/movie/MovieDetail';
@@ -23,6 +25,16 @@ function MovieDetailContainer() {
   const movieDetail = state.context.movieDetail;
   const isLoading = state.matches('Fetching Movie Detail');
   const error = state.context.error;
+
+  useEffect(() => {
+    if (movieDetail) {
+      console.log('logging view_item event for movie:', movieDetail.title);
+      logEvent(firebaseAnalytics, 'view_item', {
+        item_id: movieDetail.id,
+        item_name: movieDetail.title,
+      });
+    }
+  }, [movieDetail]);
 
   return (
     <MovieDetail

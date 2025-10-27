@@ -154,6 +154,11 @@ function MovieListContainer() {
         data: { movie },
       });
     }
+
+    const isCurrentlyViewingFavorites = movieState.context.mode === 'favorites';
+    if (isCurrentlyViewingFavorites) {
+      movieSend({ type: 'FETCH_FAVORITES' });
+    }
   };
 
   const handlePageChange = (page: number) => {
